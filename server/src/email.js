@@ -5,6 +5,9 @@ export const transporter = nodemailer.createTransport({
   port: Number(process.env.EMAIL_PORT) || 587,
   secure: false,
   requireTLS: true,
+  // Force IPv4 — some hosts (e.g. Railway) have no outbound IPv6 route,
+  // which makes the default dual-stack lookup fail with ENETUNREACH.
+  family: 4,
   auth: {
     user: process.env.EMAIL_HOST_USER,
     pass: process.env.EMAIL_HOST_PASSWORD,
