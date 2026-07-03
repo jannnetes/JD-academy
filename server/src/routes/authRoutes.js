@@ -4,7 +4,7 @@ import crypto from "node:crypto";
 import { z } from "zod";
 import { prisma } from "../prisma.js";
 import { signToken, requireAuth } from "../auth.js";
-import { transporter, buildConfirmationEmail } from "../email.js";
+import { sendMail, buildConfirmationEmail } from "../email.js";
 
 const router = Router();
 
@@ -45,7 +45,7 @@ router.post("/register", async (req, res) => {
 
   try {
     const mail = buildConfirmationEmail(name, token, locale || "en");
-    await transporter.sendMail({ ...mail, to: email });
+    await sendMail({ ...mail, to: email });
   } catch (err) {
     console.error("Email send failed:", err.message);
     // Roll back so the user can retry registration cleanly.

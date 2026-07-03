@@ -1,18 +1,22 @@
-import nodemailer from "nodemailer";
+import sgMail from "@sendgrid/mail";
 
-export const transporter = nodemailer.createTransport({
-  host: process.env.EMAIL_HOST,
-  port: Number(process.env.EMAIL_PORT) || 587,
-  secure: false,
-  requireTLS: true,
-  // Force IPv4 — some hosts (e.g. Railway) have no outbound IPv6 route,
-  // which makes the default dual-stack lookup fail with ENETUNREACH.
-  family: 4,
-  auth: {
-    user: process.env.EMAIL_HOST_USER,
-    pass: process.env.EMAIL_HOST_PASSWORD,
-  },
-});
+if (process.env.SENDGRID_API_KEY) {
+  sgMail.setApiKey(process.env.SENDGRID_API_KEY);
+}
+
+// SendGrid sends over HTTPS (443) — unlike raw SMTP (25/465/587), this
+// isn't blocked by hosts (e.g. Railway) that firewall outbound mail ports.
+export async function sendMail({ to, subject, html }) {
+  if (!process.env.SENDGRID_API_KEY) {
+    throw new Error("SendGrid is not configured");
+  }
+  await sgMail.send({
+    to,
+    from: { email: process.env.DEFAULT_FROM_EMAIL, name: process.env.FROM_NAME || "JD Learn" },
+    subject,
+    html,
+  });
+}
 
 const SUBJECTS = {
   uk: "Підтвердіть реєстрацію — JD Learn",
@@ -24,7 +28,6 @@ const SUBJECTS = {
 // Branded JD Learn confirmation email (Swiss editorial).
 export function buildConfirmationEmail(name, token, locale = "en") {
   const confirmUrl = `${process.env.API_URL}/api/auth/verify?token=${token}`;
-  const from = `"${process.env.FROM_NAME || "JD Learn"}" <${process.env.DEFAULT_FROM_EMAIL}>`;
 
   const html = `<!DOCTYPE html><html><head><meta charset="utf-8"><style>
     body{background:#F7F4EE;font-family:Arial,sans-serif;margin:0;padding:0;}
@@ -58,5 +61,5 @@ export function buildConfirmationEmail(name, token, locale = "en") {
     </div>
   </body></html>`;
 
-  return { from, to: undefined, subject: SUBJECTS[locale] || SUBJECTS.en, html };
+  return { subject: SUBJECTS[locale] || SUBJECTS.en, html };
 }
