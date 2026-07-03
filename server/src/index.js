@@ -59,6 +59,25 @@ app.get("/api/debug/net", async (_req, res) => {
   } catch (e) {
     out.lookupDefaultError = e.message;
   }
+  function tryConnect(port) {
+    return new Promise((resolve) => {
+      const sock = net.connect(port, "smtp.gmail.com");
+      const timer = setTimeout(() => {
+        sock.destroy();
+        resolve("timeout");
+      }, 5000);
+      sock.on("connect", () => {
+        clearTimeout(timer);
+        sock.end();
+        resolve("connected");
+      });
+      sock.on("error", (e) => {
+        clearTimeout(timer);
+        resolve(`error: ${e.message}`);
+      });
+    });
+  }
+  out.connect465 = await tryConnect(465);
   out.connect587 = await new Promise((resolve) => {
     const sock = net.connect(587, "smtp.gmail.com");
     const timer = setTimeout(() => {
