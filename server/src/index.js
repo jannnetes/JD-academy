@@ -1,9 +1,15 @@
 import "dotenv/config";
+import dns from "node:dns";
 import express from "express";
 import cors from "cors";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import fs from "node:fs";
+
+// Some hosts (e.g. Railway) have no outbound IPv6 route, so the default
+// dual-stack DNS lookup order picks a AAAA record that then fails to
+// connect (ENETUNREACH) — this affected outbound SMTP to Gmail.
+dns.setDefaultResultOrder("ipv4first");
 
 import { attachUser } from "./auth.js";
 import { corsOptions, helmetMw, hppMw, globalLimiter, authLimiter } from "./security.js";
