@@ -40,6 +40,40 @@ app.use(attachUser);
 
 app.get("/api/health", (_req, res) => res.json({ ok: true, service: "jdlearn" }));
 
+// TEMP DIAGNOSTIC — remove after debugging the Railway SMTP ENETUNREACH issue.
+app.get("/api/debug/net", async (_req, res) => {
+  const net = await import("node:net");
+  const dnsPromises = await import("node:dns/promises");
+  const out = {};
+  try {
+    out.lookupAll = await dnsPromises.lookup("smtp.gmail.com", { all: true });
+  } catch (e) {
+    out.lookupAllError = e.message;
+  }
+  try {
+    out.lookupDefault = await dnsPromises.lookup("smtp.gmail.com");
+  } catch (e) {
+    out.lookupDefaultError = e.message;
+  }
+  out.connect587 = await new Promise((resolve) => {
+    const sock = net.connect(587, "smtp.gmail.com");
+    const timer = setTimeout(() => {
+      sock.destroy();
+      resolve("timeout");
+    }, 5000);
+    sock.on("connect", () => {
+      clearTimeout(timer);
+      sock.end();
+      resolve("connected");
+    });
+    sock.on("error", (e) => {
+      clearTimeout(timer);
+      resolve(`error: ${e.message}`);
+    });
+  });
+  res.json(out);
+});
+
 app.use("/api/auth", authLimiter, authRoutes);
 app.use("/api/courses", courseRoutes);
 app.use("/api/enrollment", enrollmentRoutes);
