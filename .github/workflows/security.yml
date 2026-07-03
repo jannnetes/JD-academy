@@ -1,0 +1,45 @@
+name: Security & Quality
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main]
+
+jobs:
+  audit-lint-build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+
+      - name: Install (frontend)
+        run: npm ci
+
+      - name: Install (server)
+        run: npm --prefix server ci
+
+      - name: npm audit — frontend (high+)
+        run: npm audit --audit-level=high
+        continue-on-error: true
+
+      - name: npm audit — server (high+)
+        run: npm --prefix server audit --audit-level=high
+        continue-on-error: true
+
+      - name: ESLint
+        run: npm run lint
+        continue-on-error: true
+
+      - name: Build
+        run: npm run build
+
+      - name: Ensure .env is not committed
+        run: |
+          if git ls-files | grep -E '(^|/)\.env$'; then
+            echo "::error::.env is committed — remove it from git!"; exit 1
+          fi
+          test -f server/.env.example || (echo "::error::server/.env.example missing"; exit 1)

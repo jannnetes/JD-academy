@@ -1,0 +1,110 @@
+/* ============================================================
+   EDUFLOW NAVBAR + bold public pages (catalog/teachers/about/live)
+   Loaded last.
+   ============================================================ */
+
+/* ---------- NAVBAR ---------- */
+.nav-edu {
+  position: fixed; top: 0; left: 0; right: 0; height: 64px; z-index: 300;
+  display: flex; align-items: center; gap: 30px; padding: 0 clamp(18px, 4vw, 48px);
+  background: rgba(5, 10, 31, 0.85); backdrop-filter: blur(20px);
+  transition: background 0.3s ease;
+}
+.nav-edu.solid { background: #050a1f; border-bottom: 1px solid rgba(255,255,255,0.08); }
+.edu-logo { font-family: "Bebas Neue", sans-serif; font-size: 28px; letter-spacing: 0.05em; color: #c8ff00; }
+.edu-links { display: flex; gap: 28px; margin: 0 auto; }
+.edu-link {
+  font-family: "Space Grotesk", sans-serif; font-size: 14px; text-transform: uppercase;
+  letter-spacing: 0.05em; color: #fff; position: relative; padding: 6px 0; opacity: 0.85;
+}
+.edu-link:hover { opacity: 1; }
+.edu-link.active { opacity: 1; }
+.edu-link.active::after, .edu-link:hover::after {
+  content: ""; position: absolute; left: 0; bottom: -2px; height: 2px; width: 100%; background: #c8ff00;
+}
+.edu-actions { display: flex; gap: 12px; align-items: center; }
+.edu-btn-out, .edu-btn-fill {
+  font-family: "Space Grotesk", sans-serif; font-size: 13px; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 0.03em; padding: 10px 20px; border-radius: 3px; cursor: pointer;
+}
+.edu-btn-out { border: 1px solid rgba(255,255,255,0.7); color: #fff; background: transparent; }
+.edu-btn-out:hover { background: rgba(255,255,255,0.12); }
+.edu-btn-fill { background: #c8ff00; color: #0a0a0a !important; border: none; }
+.edu-btn-fill:hover { filter: brightness(1.05); }
+
+.edu-burger { display: none; flex-direction: column; gap: 5px; background: none; border: none; cursor: pointer; z-index: 310; }
+.edu-burger span { width: 26px; height: 2px; background: #fff; transition: 0.3s; }
+.edu-burger.x span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+.edu-burger.x span:nth-child(2) { opacity: 0; }
+.edu-burger.x span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+.edu-overlay {
+  position: fixed; inset: 0; background: #0038ff; z-index: 305;
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 14px;
+  transform: translateY(-100%); transition: transform 0.45s cubic-bezier(0.76,0,0.24,1);
+}
+.edu-overlay.show { transform: translateY(0); }
+.edu-over-link { font-family: "Bebas Neue", sans-serif; font-size: clamp(48px, 11vw, 80px); color: #fff; }
+.edu-over-link.active { color: #c8ff00; }
+.edu-over-actions { display: flex; gap: 14px; margin-top: 30px; }
+
+/* keep in-flow pages clear of the fixed navbar */
+.site { padding-top: 84px; }
+.bs-page { padding-top: 0; }
+
+@media (max-width: 900px) {
+  .edu-links, .edu-actions { display: none; }
+  .edu-burger { display: flex; }
+}
+
+/* ---------- CATALOG PAGE ---------- */
+.cat-page { padding-top: 110px; }
+.cat-title { font-family: "Bebas Neue", sans-serif; font-size: clamp(70px, 14vw, 170px); line-height: 0.84; margin: 0; }
+.cat-title .filled { color: #fff; display: block; }
+.cat-title .outline { -webkit-text-stroke: 2.5px #fff; color: transparent; display: block; }
+.cat-sub { color: rgba(255,255,255,0.55); font-size: clamp(15px,1.6vw,20px); margin: 22px 0 36px; font-family: "Space Grotesk"; }
+
+.cat-bar { display: flex; justify-content: space-between; align-items: center; gap: 18px; flex-wrap: wrap; margin-bottom: 36px; }
+.cat-filters { display: flex; gap: 10px; overflow-x: auto; padding-bottom: 8px; max-width: 100%; }
+.cat-filters .bs-filter { white-space: nowrap; }
+.cat-sort {
+  font-family: "Space Mono", monospace; font-size: 13px; color: #fff; background: transparent;
+  border: 1px solid rgba(255,255,255,0.4); border-radius: 999px; padding: 11px 16px; cursor: pointer;
+}
+.cat-sort option { color: #0a0a0a; }
+
+.cat-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 22px; }
+.cat-empty { text-align: center; padding: 60px 0; }
+.cat-more {
+  display: block; margin: 50px auto 0; font-family: "Space Grotesk"; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 0.05em; font-size: 16px; color: #fff;
+  background: transparent; border: 1.5px solid #fff; border-radius: 3px; padding: 18px 44px; cursor: pointer;
+  transition: 0.2s;
+}
+.cat-more:hover { background: #c8ff00; color: #0a0a0a; border-color: #c8ff00; }
+
+@media (max-width: 1024px) { .cat-grid { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 640px) { .cat-grid { grid-template-columns: 1fr; } }
+
+/* ---------- SEARCH (teachers) ---------- */
+.edu-search {
+  width: 100%; max-width: 520px; margin-top: 24px; padding: 16px 22px;
+  background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.4); border-radius: 999px;
+  color: #fff; font-family: "Space Grotesk"; font-size: 16px; outline: none;
+}
+.edu-search::placeholder { color: rgba(255,255,255,0.6); }
+
+/* ---------- LIVE PAGE ---------- */
+.live-tabs { display: flex; gap: 10px; margin: 30px 0 10px; flex-wrap: wrap; }
+.live-tab {
+  font-family: "Space Mono", monospace; font-size: 13px; letter-spacing: 0.05em;
+  padding: 12px 22px; border: 1px solid rgba(255,255,255,0.5); background: transparent; color: #fff;
+  border-radius: 999px; cursor: pointer;
+}
+.live-tab.on { background: #fff; color: #ff3d2e; border-color: #fff; }
+.live-table { margin-top: 26px; }
+.live-row { display: grid; grid-template-columns: 1.4fr 2fr 1.4fr 1fr 0.8fr; gap: 14px; padding: 16px 14px; align-items: center; }
+.live-row:nth-child(even) { background: rgba(255,255,255,0.08); }
+.live-head { font-family: "Space Mono", monospace; font-size: 12px; letter-spacing: 0.1em; opacity: 0.7; }
+.live-name { font-weight: 700; }
+@media (max-width: 760px) { .live-row { grid-template-columns: 1fr 1fr; } }

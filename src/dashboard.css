@@ -1,0 +1,120 @@
+/* ============================================================
+   EDUFLOW DASHBOARDS — sidebar layout + Swiss content restyle
+   Loaded last. Scoped under .dash so it overrides earlier styles.
+   ============================================================ */
+.dash { display: flex; min-height: 100vh; background: #f7f4ee; font-family: "Space Grotesk", sans-serif; color: #0d0d0d; }
+
+/* ---------- SIDEBAR ---------- */
+.dash-side { width: 260px; flex-shrink: 0; position: sticky; top: 0; height: 100vh; display: flex; flex-direction: column; --sline: rgba(255,255,255,0.14); }
+.dash-student .dash-side { background: #0d0d0d; color: #f7f4ee; }
+.dash-teacher .dash-side { background: #f73b20; color: #fff; }
+.dash-admin .dash-side { background: #f7f4ee; color: #0d0d0d; border-right: 1.5px solid #0d0d0d; --sline: rgba(13,13,13,0.14); }
+
+.side-top { padding: 30px 24px; display: flex; align-items: baseline; gap: 10px; border-bottom: 1px solid var(--sline); }
+.side-logo { font-family: "Bebas Neue", sans-serif; font-size: 40px; line-height: 1; color: #f73b20; }
+.dash-teacher .side-logo { color: #fff; }
+.side-brand { font-family: "Space Mono", monospace; font-size: 10px; letter-spacing: 0.2em; opacity: 0.55; }
+
+.side-nav { flex: 1; padding: 16px 0; display: flex; flex-direction: column; overflow-y: auto; }
+.side-link { display: flex; align-items: center; gap: 12px; height: 48px; padding: 0 24px; background: none; border: none; border-left: 3px solid transparent; color: inherit; font-family: "Space Grotesk", sans-serif; font-size: 15px; text-align: left; cursor: pointer; opacity: 0.82; transition: 0.2s; }
+.dash-admin .side-link { font-family: "Space Mono", monospace; font-size: 13px; text-transform: uppercase; letter-spacing: 0.03em; }
+.side-link:hover { opacity: 1; background: rgba(255,255,255,0.05); }
+.dash-admin .side-link:hover { background: rgba(0,0,0,0.04); }
+.side-mark { width: 6px; height: 6px; border-radius: 50%; background: currentColor; opacity: 0.4; }
+.dash-student .side-link.active { border-left-color: #f73b20; background: rgba(247,59,32,0.1); color: #f73b20; }
+.dash-teacher .side-link.active { border-left-color: #fff; background: rgba(255,255,255,0.16); font-weight: 700; }
+.dash-admin .side-link.active { background: #0d0d0d; color: #f7f4ee; }
+.side-link.active .side-mark { opacity: 1; }
+
+.side-foot { padding: 20px 24px; border-top: 1px solid var(--sline); display: flex; flex-direction: column; gap: 12px; }
+.side-user { display: flex; align-items: center; gap: 12px; }
+.side-ava { border: 1.5px solid currentColor; border-radius: 150px; padding: 7px 13px; font-family: "Space Mono", monospace; font-size: 13px; }
+.dash-student .side-ava { color: #f73b20; }
+.side-name { font-size: 14px; }
+.side-role { font-family: "Space Mono", monospace; font-size: 10px; opacity: 0.55; }
+.side-exit { background: none; border: none; color: inherit; font-family: "Space Mono", monospace; font-size: 11px; opacity: 0.7; cursor: pointer; text-align: left; }
+.dash-student .side-exit { color: #f73b20; opacity: 0.85; }
+
+/* ---------- MAIN AREA ---------- */
+.dash-main { flex: 1; min-width: 0; padding: 44px clamp(24px, 4vw, 56px) 90px; }
+.dash-crumb { font-family: "Space Mono", monospace; font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; opacity: 0.45; }
+.dash-head-row { display: flex; justify-content: space-between; align-items: flex-end; gap: 20px; flex-wrap: wrap; margin-top: 10px; }
+.dash-title { font-family: "Bebas Neue", sans-serif; font-size: clamp(54px, 9vw, 104px); line-height: 0.82; margin: 0; display: flex; flex-wrap: wrap; align-items: baseline; gap: 0 18px; }
+.dash-title .filled { color: #0d0d0d; }
+.dash-title .outline { -webkit-text-stroke: 2px #0d0d0d; color: transparent; }
+.dash-title .accent { font-family: "Playfair Display", serif; font-style: italic; font-weight: 600; color: #f73b20; font-size: clamp(26px, 5vw, 56px); }
+.dash-date { font-family: "Space Mono", monospace; font-size: 12px; opacity: 0.5; }
+.dash-rule { height: 1px; background: #0d0d0d; margin: 26px 0 34px; }
+
+/* ---------- CONTENT RESTYLE (override prior glass/cards) ---------- */
+.dash .glass, .dash .info-card, .dash .form-card, .dash .empty-card,
+.dash .table-card, .dash .leaderboard, .dash .builder-card, .dash .gami-bar,
+.dash .stat-card, .dash .dash-card, .dash .badge-card {
+  background: #fff; border: 1.5px solid #0d0d0d; border-radius: 16px;
+  backdrop-filter: none; box-shadow: none;
+}
+.dash .stat-card { padding: 24px; transition: transform 0.25s, box-shadow 0.25s; }
+.dash .stat-card:hover, .dash .dash-card:hover { transform: translateY(-4px); box-shadow: rgba(247,59,32,0.14) 0 8px 32px; }
+.dash .stat-card.accent { background: #0d0d0d; border-color: #0d0d0d; }
+.dash .stat-card.accent .muted { color: rgba(255,255,255,0.6); }
+.dash .stat-card.accent .stat-num { color: #c8ff00; }
+.dash .stat-num { font-family: "Bebas Neue", sans-serif; font-size: 64px; line-height: 0.9; color: #f73b20; letter-spacing: 0; }
+.dash .muted { font-family: "Space Mono", monospace; font-size: 11px; text-transform: uppercase; letter-spacing: 0.04em; opacity: 0.6; }
+.dash .eyebrow { color: #f73b20; }
+
+.dash h2 { font-family: "Bebas Neue", sans-serif; font-weight: 400; font-size: clamp(34px, 4vw, 52px); letter-spacing: 0.01em; }
+.dash .dash-card h3 { font-family: "Bebas Neue", sans-serif; font-weight: 400; font-size: 28px; line-height: 0.95; }
+.dash .dash-card-cover { border-radius: 10px; }
+
+.dash .progress-bar { background: rgba(0,0,0,0.12); height: 4px; }
+.dash .progress-fill { background: #c8ff00; }
+
+.dash .badge { border: 1.5px solid #0d0d0d; background: transparent; color: #0d0d0d; border-radius: 150px; font-family: "Space Mono", monospace; font-size: 11px; text-transform: uppercase; padding: 5px 12px; }
+.dash .badge.ok { border-color: #4a7856; color: #4a7856; }
+
+/* buttons → outlined pills */
+.dash .primary-btn, .dash .primary-btn.full {
+  background: transparent !important; border: 2px solid #f73b20; color: #f73b20 !important;
+  border-radius: 150px; box-shadow: none; font-family: "Space Grotesk", sans-serif;
+  font-weight: 700; text-transform: uppercase; font-size: 13px; letter-spacing: 0.02em; padding: 12px 22px;
+}
+.dash .primary-btn:hover { background: #f73b20 !important; color: #fff !important; }
+.dash .secondary-btn, .dash .secondary-btn.full {
+  background: transparent; border: 1.5px solid #0d0d0d; color: #0d0d0d; border-radius: 150px;
+  text-transform: uppercase; font-size: 13px; font-weight: 700;
+}
+.dash .secondary-btn:hover { background: #0d0d0d; color: #f7f4ee; }
+
+/* tables Swiss */
+.dash .table-card { padding: 6px 22px; }
+.dash .table-row { border-bottom: 1px solid rgba(0,0,0,0.1); }
+.dash .table-head { font-family: "Space Mono", monospace; font-size: 11px; text-transform: uppercase; letter-spacing: 0.05em; opacity: 0.6; border-bottom: 2px solid #0d0d0d; }
+
+/* gamification */
+.dash .level-ring { background: #0d0d0d; }
+.dash .level-num { font-family: "Bebas Neue", sans-serif; }
+.dash .xp-fill { background: linear-gradient(90deg, #f73b20, #c8ff00); }
+.dash .gami-pill { background: #f7f4ee; border: 1px solid #0d0d0d; }
+.dash .gami-pill.streak { background: #f0e87a; }
+.dash .badge-card.earned { border-color: #f73b20; }
+
+/* forms */
+.dash input, .dash select, .dash textarea, .dash .auth-form input, .dash .auth-form select, .dash .auth-form textarea {
+  background: #fff !important; border: 1px solid rgba(13,13,13,0.25) !important; color: #0d0d0d !important; border-radius: 10px;
+}
+.dash .info-card.subtle { background: #f0e87a; border: none; }
+.dash .fee-row input { width: 80px; }
+
+/* category-color square for tables (admin courses) */
+.dash .cat-square { width: 40px; height: 40px; border-radius: 8px; flex-shrink: 0; }
+
+/* ---------- RESPONSIVE ---------- */
+@media (max-width: 900px) {
+  .dash { flex-direction: column; }
+  .dash-side { width: 100%; height: auto; position: static; flex-direction: column; }
+  .side-nav { flex-direction: row; overflow-x: auto; padding: 8px; }
+  .side-link { height: 40px; white-space: nowrap; border-left: none; border-bottom: 3px solid transparent; }
+  .dash-student .side-link.active, .dash-teacher .side-link.active, .dash-admin .side-link.active { border-left: none; }
+  .side-foot { flex-direction: row; justify-content: space-between; align-items: center; }
+  .dash-main { padding: 30px 20px 80px; }
+}

@@ -1,0 +1,257 @@
+// JD Learn — global educational platform
+// Course → Module → Lesson → Homework → Certificate + gamification.
+// SQLite for local dev; switch provider to "postgresql" for production.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  password  String
+  name      String
+  role      String   @default("student") // student | teacher | admin
+  avatar    String?
+  bio       String?
+  expertise String?
+  createdAt DateTime @default(now())
+
+  // email verification
+  isVerified      Boolean   @default(false)
+  verifyToken     String?
+  verifyTokenExp  DateTime?
+  preferredLocale String    @default("en")
+
+  // gamification
+  xp            Int      @default(0)
+  streak        Int      @default(0)
+  lastActiveDay String?  // "YYYY-MM-DD" of last XP-earning activity
+
+  courses      Course[]      @relation("TeacherCourses")
+  enrollments  Enrollment[]
+  orders       Order[]
+  liveSessions LiveSession[] @relation("TeacherSessions")
+  bookings     LiveBooking[]
+  reviews      Review[]
+  submissions  HomeworkSubmission[]
+  badges       UserBadge[]
+  certificates Certificate[]
+}
+
+model Course {
+  id          String   @id @default(cuid())
+  teacherId   String
+  teacher     User     @relation("TeacherCourses", fields: [teacherId], references: [id])
+  title       String
+  description String
+  industry    String
+  topics      String
+  basePrice   Int
+  cover       String?
+  status      String   @default("draft") // draft | published | archived
+  level       String   @default("Початковий") // Початковий | Середній | Просунутий
+  createdAt   DateTime @default(now())
+
+  modules      Module[]
+  enrollments  Enrollment[]
+  orders       Order[]
+  reviews      Review[]
+  liveSessions LiveSession[]
+  certificates Certificate[]
+}
+
+model Module {
+  id       String   @id @default(cuid())
+  courseId String
+  course   Course   @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  order    Int
+  title    String
+  lessons  Lesson[]
+}
+
+model Lesson {
+  id          String   @id @default(cuid())
+  moduleId    String
+  module      Module   @relation(fields: [moduleId], references: [id], onDelete: Cascade)
+  order       Int
+  title       String
+  videoUrl    String?
+  durationMin Int      @default(0)
+  content     String?
+  xpReward    Int      @default(20)
+
+  progress LessonProgress[]
+  homework Homework[]
+  blocks   CourseBlock[]
+}
+
+model CourseBlock {
+  id       String  @id @default(cuid())
+  lessonId String
+  lesson   Lesson  @relation(fields: [lessonId], references: [id], onDelete: Cascade)
+  order    Int
+  type     String  // text | callout | code | quiz | embed | image | video | file | divider
+  content  String  @default("{}") // JSON-encoded block data
+}
+
+model Enrollment {
+  id          String   @id @default(cuid())
+  studentId   String
+  student     User     @relation(fields: [studentId], references: [id])
+  courseId    String
+  course      Course   @relation(fields: [courseId], references: [id])
+  progressPct Int      @default(0)
+  completedAt DateTime?
+  purchasedAt DateTime @default(now())
+
+  lessonProgress LessonProgress[]
+
+  @@unique([studentId, courseId])
+}
+
+model LessonProgress {
+  id           String     @id @default(cuid())
+  enrollmentId String
+  enrollment   Enrollment @relation(fields: [enrollmentId], references: [id], onDelete: Cascade)
+  lessonId     String
+  lesson       Lesson     @relation(fields: [lessonId], references: [id], onDelete: Cascade)
+  completed    Boolean    @default(false)
+
+  @@unique([enrollmentId, lessonId])
+}
+
+model Order {
+  id            String   @id @default(cuid())
+  buyerId       String
+  buyer         User     @relation(fields: [buyerId], references: [id])
+  courseId      String?
+  course        Course?  @relation(fields: [courseId], references: [id])
+  type          String
+  amount        Int
+  platformFee   Int
+  teacherPayout Int
+  status        String   @default("paid")
+  createdAt     DateTime @default(now())
+}
+
+model LiveSession {
+  id          String   @id @default(cuid())
+  teacherId   String
+  teacher     User     @relation("TeacherSessions", fields: [teacherId], references: [id])
+  courseId    String?
+  course      Course?  @relation(fields: [courseId], references: [id])
+  title       String
+  startsAt    DateTime
+  durationMin Int      @default(60)
+  price       Int      @default(0)
+  capacity    Int      @default(20)
+  status      String   @default("scheduled")
+  roomUrl     String?
+  provider    String   @default("daily") // daily | zoom | 100ms | jitsi
+  recordingUrl String?
+  createdAt   DateTime @default(now())
+
+  bookings LiveBooking[]
+  homework Homework[]
+}
+
+model LiveBooking {
+  id            String      @id @default(cuid())
+  liveSessionId String
+  liveSession   LiveSession @relation(fields: [liveSessionId], references: [id], onDelete: Cascade)
+  studentId     String
+  student       User        @relation(fields: [studentId], references: [id])
+  status        String      @default("booked")
+
+  @@unique([liveSessionId, studentId])
+}
+
+model Homework {
+  id            String   @id @default(cuid())
+  lessonId      String?
+  lesson        Lesson?  @relation(fields: [lessonId], references: [id], onDelete: Cascade)
+  liveSessionId String?
+  liveSession   LiveSession? @relation(fields: [liveSessionId], references: [id], onDelete: Cascade)
+  title         String
+  description   String
+  materials     String?
+  xpReward      Int      @default(50)
+  dueDate       DateTime?
+  createdAt     DateTime @default(now())
+
+  submissions HomeworkSubmission[]
+}
+
+model HomeworkSubmission {
+  id         String   @id @default(cuid())
+  homeworkId String
+  homework   Homework @relation(fields: [homeworkId], references: [id], onDelete: Cascade)
+  studentId  String
+  student    User     @relation(fields: [studentId], references: [id])
+  content    String
+  grade      Int?
+  feedback   String?
+  createdAt  DateTime @default(now())
+
+  @@unique([homeworkId, studentId])
+}
+
+model Review {
+  id        String   @id @default(cuid())
+  courseId  String
+  course    Course   @relation(fields: [courseId], references: [id])
+  studentId String
+  student   User     @relation(fields: [studentId], references: [id])
+  rating    Int      @default(5)
+  text      String
+  status    String   @default("published")
+  createdAt DateTime @default(now())
+
+  @@unique([courseId, studentId])
+}
+
+model Certificate {
+  id       String   @id @default(cuid())
+  userId   String
+  user     User     @relation(fields: [userId], references: [id])
+  courseId String
+  course   Course   @relation(fields: [courseId], references: [id])
+  serial   String   @unique
+  issuedAt DateTime @default(now())
+
+  @@unique([userId, courseId])
+}
+
+// Badge catalog (achievement definitions)
+model Badge {
+  id          String      @id @default(cuid())
+  code        String      @unique // "first_lesson", "streak_7", "xp_500", "first_course"
+  title       String
+  description String
+  icon        String      // emoji
+  users       UserBadge[]
+}
+
+model UserBadge {
+  id       String   @id @default(cuid())
+  userId   String
+  user     User     @relation(fields: [userId], references: [id])
+  badgeId  String
+  badge    Badge    @relation(fields: [badgeId], references: [id])
+  earnedAt DateTime @default(now())
+
+  @@unique([userId, badgeId])
+}
+
+model PlatformFeeConfig {
+  id        String   @id @default(cuid())
+  type      String   @unique
+  percent   Int
+  updatedAt DateTime @updatedAt
+}

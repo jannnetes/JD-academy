@@ -1,0 +1,180 @@
+/* ============================================================
+   BOLD TYPOGRAPHIC — Off-White / Supreme energy (.bold)
+   Electric blue · acid lime · coral. Type + colour only.
+   Loaded last.
+   ============================================================ */
+.bold {
+  --blue: #0038ff; --lime: #c8ff00; --cream: #f5f0e8; --navy: #050a1f;
+  --coral: #ff3d2e; --lav: #e8e0ff; --black: #0a0a0a; --white: #fff;
+  font-family: "Space Grotesk", sans-serif;
+  overflow-x: hidden;
+}
+.bold .loader { background: var(--blue); }
+.bold .loader-word { color: var(--lime); font-family: "Bebas Neue", sans-serif; letter-spacing: 0.04em; }
+.mono { font-family: "Space Mono", monospace; }
+
+/* ---------- SECTION SYSTEM ---------- */
+.bs { position: relative; width: 100%; padding: clamp(72px, 9vw, 150px) 0; overflow: hidden; }
+.bw { max-width: 1440px; margin: 0 auto; padding: 0 clamp(22px, 5vw, 80px); position: relative; z-index: 2; }
+.bs-blue { background: #0038ff; color: #fff; }
+.bs-cream { background: #f5f0e8; color: #0a0a0a; }
+.bs-lime { background: #c8ff00; color: #0a0a0a; }
+.bs-navy { background: #050a1f; color: #fff; }
+.bs-coral { background: #ff3d2e; color: #fff; }
+.bs-black { background: #0a0a0a; color: #fff; }
+
+/* ---------- SECTION COUNTER ---------- */
+.sec-counter {
+  position: fixed; left: 18px; bottom: 26px; z-index: 90;
+  display: flex; flex-direction: column; align-items: center; line-height: 1;
+  font-family: "Space Mono", monospace; font-size: 15px; font-weight: 700;
+  color: #fff; mix-blend-mode: difference; pointer-events: none;
+}
+.sec-sep { opacity: 0.5; margin: 2px 0; }
+
+/* ---------- VERTICAL LABELS ---------- */
+.bs-vlabel {
+  position: absolute; left: 16px; top: clamp(72px, 9vw, 150px); writing-mode: vertical-rl;
+  font-family: "Space Mono", monospace; font-size: 12px; letter-spacing: 0.3em;
+  text-transform: uppercase; opacity: 0.6; z-index: 3;
+}
+.bs-vlabel.light, .bs-vlabel.dark { opacity: 0.7; }
+
+/* ---------- DISPLAY TYPE ---------- */
+.bs-h2 {
+  font-family: "Bebas Neue", sans-serif; font-weight: 400;
+  font-size: clamp(48px, 8vw, 130px); line-height: 0.9; letter-spacing: 0.01em; margin: 0 0 44px;
+}
+.line { display: block; }
+.outline, .line.outline { -webkit-text-stroke: 2.5px currentColor; color: transparent; }
+
+/* ---------- 01 HERO ---------- */
+.bs-hero { padding-top: 60px; }
+.bs-hero-title {
+  font-family: "Bebas Neue", sans-serif; font-weight: 400; margin: 0 0 40px;
+  font-size: clamp(90px, 22vw, 240px); line-height: 0.82; letter-spacing: 0.005em;
+}
+.bs-hero-title .filled { color: #fff; }
+.bs-hero-title .outline { -webkit-text-stroke: 3px #fff; color: transparent; }
+.bs-hero-title .serif {
+  font-family: "Playfair Display", serif; font-style: italic; font-weight: 500;
+  font-size: clamp(46px, 11vw, 130px); line-height: 1; letter-spacing: -0.01em; text-transform: none;
+}
+.bs-ticker { position: relative; z-index: 2; margin-top: 50px; background: var(--lime); padding: 16px 0; overflow: hidden; }
+.bs-ticker-row { font-family: "Bebas Neue", sans-serif; font-size: clamp(20px, 3vw, 38px); letter-spacing: 0.04em; color: #0a0a0a; white-space: nowrap; }
+
+/* ---------- BUTTONS ---------- */
+.bs-btn {
+  display: inline-block; font-family: "Space Grotesk", sans-serif; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 0.02em; font-size: 15px;
+  padding: 18px 36px; border-radius: 2px; transition: transform 0.2s, filter 0.2s;
+}
+.bs-btn:hover { transform: translateY(-3px); }
+.bs-btn.lime { background: #c8ff00; color: #0a0a0a !important; }
+.bs-btn.black { background: #0a0a0a; color: #c8ff00 !important; }
+.bs-btn.white-d { background: #fff; color: #0a0a0a !important; }
+.bs-btn.white-coral { background: #fff; color: #ff3d2e !important; }
+
+/* ---------- 02 MANIFESTO ---------- */
+.bs-ghost-letter {
+  position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+  font-family: "Bebas Neue", sans-serif; font-size: 700px; line-height: 1;
+  color: #0038ff; opacity: 0.04; z-index: 0; pointer-events: none;
+}
+.bs-manifesto-cols { display: grid; grid-template-columns: repeat(3, 1fr); gap: 30px; }
+.bs-manifesto-cols p { font-size: 18px; line-height: 1.55; margin: 0; }
+
+/* ---------- 03 NUMBERS ---------- */
+.bs-numbers-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 30px; }
+.bs-num { text-align: center; }
+.bs-num-val { display: block; font-family: "Bebas Neue", sans-serif; font-size: clamp(80px, 14vw, 200px); line-height: 0.85; }
+.bs-num-line { display: block; width: 56px; height: 2px; background: #0a0a0a; margin: 16px auto; }
+.bs-num-label { font-family: "Space Mono", monospace; font-size: 13px; letter-spacing: 0.05em; }
+
+/* ---------- 04 CATALOG ---------- */
+.bs-filters { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 40px; }
+.bs-filter {
+  font-family: "Space Mono", monospace; font-size: 13px; letter-spacing: 0.05em;
+  padding: 11px 20px; border: 1px solid rgba(255,255,255,0.6); background: transparent;
+  color: #fff; border-radius: 999px; cursor: none; transition: 0.2s;
+}
+.bs-filter:hover { background: rgba(255,255,255,0.1); }
+.bs-filter.on { background: #c8ff00; color: #0a0a0a; border-color: #c8ff00; }
+.bs-cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 22px; }
+.bs-card {
+  display: flex; flex-direction: column; min-height: 300px; padding: 26px; border-radius: 6px;
+  transition: transform 0.3s, box-shadow 0.3s;
+}
+.bs-card:hover { transform: translateY(-8px); box-shadow: 0 30px 60px -20px rgba(0,0,0,0.5); }
+.bs-card-top { display: flex; justify-content: space-between; font-family: "Space Mono", monospace; font-size: 13px; font-weight: 700; }
+.bs-card-title { font-family: "Bebas Neue", sans-serif; font-size: clamp(34px, 4vw, 52px); line-height: 0.92; margin: 24px 0 auto; }
+.bs-card-meta { display: flex; justify-content: space-between; font-size: 13px; opacity: 0.85; margin-bottom: 16px; }
+.bs-card-foot { display: flex; justify-content: space-between; align-items: center; padding-top: 16px; border-top: 1px solid currentColor; }
+.bs-card-price { font-family: "Bebas Neue", sans-serif; font-size: 30px; }
+.bs-card-buy { font-family: "Space Mono", monospace; font-size: 13px; font-weight: 700; }
+
+/* ---------- 05 LIVE ---------- */
+.bs-live-grid { display: grid; grid-template-columns: 1fr 0.9fr; gap: 50px; align-items: center; }
+.bs-live-title { font-family: "Bebas Neue", sans-serif; font-size: clamp(120px, 24vw, 320px); line-height: 0.78; margin: 0; }
+.bs-live-title .outline-w { -webkit-text-stroke: 3px #fff; color: transparent; display: block; }
+.bs-live-title .filled-w { color: #fff; display: block; }
+.bs-live-badge { display: inline-flex; align-items: center; gap: 10px; background: #fff; color: #ff3d2e; font-weight: 700; padding: 8px 16px; border-radius: 999px; font-family: "Space Mono", monospace; font-size: 13px; margin-bottom: 24px; }
+.bs-live-dot { width: 10px; height: 10px; border-radius: 50%; background: #ff3d2e; box-shadow: 0 0 0 3px rgba(255,61,46,0.3); animation: bspulse 1.3s infinite; }
+@keyframes bspulse { 0%,100% { box-shadow: 0 0 0 0 rgba(255,61,46,0.5);} 50% { box-shadow: 0 0 0 7px rgba(255,61,46,0);} }
+.bs-live-list { margin-bottom: 26px; }
+.bs-live-row { display: grid; grid-template-columns: 80px 1fr; gap: 14px; padding: 14px 0; border-top: 1px solid rgba(255,255,255,0.3); }
+.bs-live-name { font-weight: 600; }
+
+/* ---------- 06 HOW ---------- */
+.bs-steps { display: grid; grid-template-columns: repeat(4, 1fr); gap: 26px; }
+.bs-step { border-top: 3px solid #0038ff; padding-top: 18px; }
+.bs-step-n { font-family: "Bebas Neue", sans-serif; font-size: 70px; line-height: 0.9; color: #0038ff; display: block; }
+.bs-step strong { display: block; font-size: 19px; margin: 8px 0 6px; }
+.bs-step p { margin: 0; font-size: 14px; opacity: 0.7; line-height: 1.5; }
+
+/* ---------- 07 TEACHERS ---------- */
+.bs-teach-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 20px; }
+.bs-teach {
+  display: flex; flex-direction: column; gap: 6px; padding: 26px; border-radius: 6px;
+  border: 1px solid rgba(255,255,255,0.4); transition: 0.3s;
+}
+.bs-teach:hover { background: #c8ff00; color: #0a0a0a; border-color: #c8ff00; }
+.bs-teach-init { font-family: "Bebas Neue", sans-serif; font-size: 76px; line-height: 0.9; }
+.bs-teach strong { font-size: 18px; }
+.bs-teach-field { font-family: "Space Mono", monospace; font-size: 12px; letter-spacing: 0.05em; opacity: 0.8; }
+.bs-teach-meta { font-size: 12px; opacity: 0.7; margin-top: 4px; }
+.bs-teach-link { margin-top: 12px; font-family: "Space Mono", monospace; font-size: 13px; font-weight: 700; border-bottom: 2px solid currentColor; align-self: flex-start; padding-bottom: 3px; }
+
+/* ---------- 08 REVIEWS ---------- */
+.bs-reviews { position: relative; }
+.bs-bigquote { position: absolute; top: -120px; left: 50%; transform: translateX(-50%); font-family: "Playfair Display", serif; font-size: 800px; line-height: 1; color: #fff; opacity: 0.03; pointer-events: none; }
+.bs-reviews .marquee-section { margin: 14px 0; }
+.bs-reviews .marquee-card { background: #141414; border-color: rgba(255,255,255,0.18); color: #fff; }
+.marquee-track.reverse { animation-direction: reverse; }
+
+/* ---------- 09 CTA ---------- */
+.bs-cta-inner { text-align: center; }
+.bs-cta-title { font-family: "Bebas Neue", sans-serif; font-size: clamp(90px, 22vw, 240px); line-height: 0.8; margin: 0 0 44px; }
+.bs-cta-title .filled-d { color: #0a0a0a; display: block; }
+.bs-cta-title .outline-d { -webkit-text-stroke: 3px #0a0a0a; color: transparent; display: block; }
+.bs-cta-actions { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; }
+
+/* ---------- FOOTER ---------- */
+.bs-footer { background: #0a0a0a; color: #fff; padding: 50px 0; }
+.bs-footer-in { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 18px; }
+.bs-footer-brand { font-family: "Bebas Neue", sans-serif; font-size: 40px; }
+.bs-footer nav { display: flex; gap: 22px; font-family: "Space Mono", monospace; font-size: 13px; }
+.bs-footer nav a { color: rgba(255,255,255,0.7); }
+.bs-footer nav a:hover { color: #c8ff00; }
+
+/* ---------- RESPONSIVE ---------- */
+@media (max-width: 1024px) {
+  .bs-live-grid { grid-template-columns: 1fr; gap: 30px; }
+  .bs-steps { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 768px) {
+  .bs-manifesto-cols, .bs-numbers-grid { grid-template-columns: 1fr; gap: 24px; }
+  .bs-steps { grid-template-columns: 1fr; }
+  .bs-vlabel, .bs-ghost-letter { display: none; }
+  .sec-counter { display: none; }
+}

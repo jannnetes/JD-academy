@@ -1,0 +1,184 @@
+/* ============================================================
+   EDITORIAL LANDING — Vogue-style magazine layout (.mag)
+   Big serif display, whitespace, thin rules, amber accent.
+   Theme-aware via tokens. Loaded last.
+   ============================================================ */
+
+.mag { padding-bottom: 0; }
+
+/* serif display for all editorial headings */
+.mag-title, .mag-statement, .mag-cta-title,
+.mag-edition-main h3, .mag-step h3, .mag-course h4, .mag-footer-brand {
+  font-family: "Fraunces", "Space Grotesk", serif;
+  font-weight: 600;
+  letter-spacing: -0.025em;
+}
+.mag em {
+  font-style: italic;
+  color: var(--accent);
+  font-weight: 600;
+}
+
+/* ---------- MASTHEAD ---------- */
+.mag-masthead { padding: 48px 0 40px; }
+.mag-kicker {
+  display: flex; flex-wrap: wrap; gap: 12px; align-items: center;
+  font-family: "Space Grotesk", sans-serif;
+  font-size: 12px; font-weight: 600; letter-spacing: 0.22em;
+  text-transform: uppercase; color: var(--muted);
+  padding-bottom: 28px; border-bottom: 1px solid var(--line);
+}
+.mag-kicker .dot { color: var(--accent); }
+
+.mag-hero {
+  display: grid; grid-template-columns: 1.25fr 0.75fr; gap: 30px;
+  align-items: center; padding: 40px 0 20px;
+}
+.mag-title {
+  font-size: clamp(56px, 11vw, 168px);
+  line-height: 0.9;
+  margin: 0;
+}
+.mag-hero-3d { height: 440px; position: relative; }
+.mag-hero-3d canvas { border-radius: 0; }
+.mag-3d-fallback {
+  position: absolute; inset: 0;
+  background: radial-gradient(circle at 50% 45%, var(--accent-soft), transparent 65%);
+  animation: pulse 1.6s ease-in-out infinite;
+}
+
+.mag-lede {
+  display: flex; justify-content: space-between; align-items: flex-end;
+  gap: 40px; flex-wrap: wrap; padding-top: 24px;
+}
+.mag-lede p {
+  font-size: clamp(18px, 2.2vw, 26px);
+  line-height: 1.4; max-width: 540px; margin: 0; color: var(--text);
+}
+.mag-actions { display: flex; align-items: center; gap: 22px; flex-wrap: wrap; }
+.mag-link {
+  font-family: "Space Grotesk", sans-serif;
+  font-weight: 600; font-size: 15px; color: var(--text);
+  border-bottom: 2px solid var(--accent); padding-bottom: 3px;
+  transition: gap 0.2s, opacity 0.2s;
+}
+.mag-link:hover { opacity: 0.65; }
+
+/* ---------- RULES ---------- */
+.mag-rule { height: 1px; background: var(--line); margin: 8px 0; }
+.mag .stats-strip {
+  background: transparent !important; border: none !important;
+  box-shadow: none !important; padding: 40px 0; border-radius: 0;
+}
+
+/* ---------- SECTION LABEL ---------- */
+.mag-section-label {
+  display: inline-flex; align-items: center; gap: 12px;
+  font-family: "Space Grotesk", sans-serif;
+  font-size: 12px; font-weight: 600; letter-spacing: 0.2em;
+  text-transform: uppercase; color: var(--accent-2); margin-bottom: 30px;
+}
+.mag-section-label::before {
+  content: ""; width: 32px; height: 2px; background: var(--accent);
+}
+
+/* ---------- MANIFESTO ---------- */
+.mag-manifesto-grid {
+  display: grid; grid-template-columns: 1.2fr 0.8fr; gap: 50px;
+  align-items: center; padding: 90px 0;
+}
+.mag-manifesto-3d { height: 380px; position: relative; }
+.mag-statement {
+  font-size: clamp(32px, 5.5vw, 72px); line-height: 1.02; margin: 0 0 30px;
+}
+.mag-body { font-size: clamp(16px, 1.4vw, 19px); line-height: 1.6; color: var(--muted); max-width: 620px; }
+
+/* ---------- EDITIONS ---------- */
+.mag-editions { padding: 40px 0 90px; }
+.mag-edition {
+  display: grid; grid-template-columns: 120px 1.4fr 1fr; gap: 30px;
+  align-items: baseline; padding: 36px 0; border-top: 1px solid var(--line);
+}
+.mag-edition:last-child { border-bottom: 1px solid var(--line); }
+.mag-edition-n {
+  font-family: "Fraunces", serif; font-size: 40px; color: var(--accent);
+  font-weight: 600;
+}
+.mag-edition-main h3 { font-size: clamp(26px, 3vw, 40px); margin: 0 0 6px; }
+.mag-edition-t { color: var(--muted); margin: 0; font-size: 16px; }
+.mag-edition-d { color: var(--text); margin: 0; font-size: 16px; line-height: 1.5; }
+
+/* ---------- FEATURED COURSES ---------- */
+.mag-featured { padding: 80px 0; }
+.mag-featured-head {
+  display: flex; justify-content: space-between; align-items: center;
+  margin-bottom: 36px; flex-wrap: wrap; gap: 16px;
+}
+.mag-featured-head .mag-section-label { margin-bottom: 0; }
+.mag-course-row {
+  display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px;
+}
+.mag-course { display: block; }
+.mag-course-cover {
+  aspect-ratio: 3/4; border-radius: 4px; margin-bottom: 16px;
+  transition: transform 0.4s cubic-bezier(0.22,1,0.36,1), filter 0.4s;
+  filter: saturate(0.92);
+}
+.mag-course:hover .mag-course-cover { transform: scale(0.98) translateY(-4px); filter: saturate(1.1); }
+.mag-course-cat {
+  font-family: "Space Grotesk", sans-serif; font-size: 11px; font-weight: 600;
+  letter-spacing: 0.16em; text-transform: uppercase; color: var(--accent-2);
+}
+.mag-course h4 { font-size: 20px; margin: 8px 0 12px; line-height: 1.15; }
+.mag-course-foot {
+  display: flex; justify-content: space-between; font-size: 14px;
+  color: var(--muted); font-weight: 600; padding-top: 12px;
+  border-top: 1px solid var(--line); font-family: "Space Grotesk", sans-serif;
+}
+
+/* ---------- PROCESS ---------- */
+.mag-process { padding: 90px 0; }
+.mag-process-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 40px; }
+.mag-step { border-top: 2px solid var(--accent); padding-top: 24px; }
+.mag-step-n {
+  font-family: "Fraunces", serif; font-size: 28px; color: var(--accent);
+  font-weight: 600; display: block; margin-bottom: 14px;
+}
+.mag-step h3 { font-size: 26px; margin: 0 0 12px; }
+
+/* ---------- VOICES ---------- */
+.mag-voices { padding: 60px 0; }
+
+/* ---------- CTA ---------- */
+.mag-cta {
+  padding: 80px 0 120px; text-align: center;
+  border-top: 1px solid var(--line); border-bottom: 1px solid var(--line);
+  display: flex; flex-direction: column; align-items: center;
+}
+.mag-cta-3d { height: 240px; width: 100%; max-width: 460px; }
+.mag-cta-title { font-size: clamp(40px, 8vw, 116px); line-height: 0.95; margin: 0 0 18px; }
+.mag-cta-sub { text-align: center; margin: 0 auto 36px; }
+.primary-btn.big { padding: 20px 48px; font-size: 18px; }
+
+/* ---------- FOOTER ---------- */
+.mag-footer {
+  display: flex; justify-content: space-between; align-items: center;
+  flex-wrap: wrap; gap: 20px; padding: 50px 0 70px;
+}
+.mag-footer-brand { font-size: 30px; }
+.mag-footer-nav { display: flex; gap: 26px; }
+.mag-footer-nav a { color: var(--muted); font-weight: 600; transition: color 0.2s; }
+.mag-footer-nav a:hover { color: var(--accent); }
+.mag-footer-note { color: var(--muted); font-size: 13px; font-family: "Space Grotesk", sans-serif; }
+
+/* ---------- RESPONSIVE ---------- */
+@media (max-width: 860px) {
+  .mag-hero { grid-template-columns: 1fr; }
+  .mag-manifesto-grid { grid-template-columns: 1fr; gap: 24px; }
+  .mag-manifesto-3d { height: 280px; }
+  .mag-hero-3d { height: 320px; order: -1; }
+  .mag-edition { grid-template-columns: 60px 1fr; }
+  .mag-edition-d { grid-column: 2; }
+  .mag-course-row { grid-template-columns: repeat(2, 1fr); }
+  .mag-process-grid { grid-template-columns: 1fr; gap: 28px; }
+}

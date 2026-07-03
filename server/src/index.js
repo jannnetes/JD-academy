@@ -1,0 +1,68 @@
+import "dotenv/config";
+import express from "express";
+import cors from "cors";
+import path from "node:path";
+import { fileURLToPath } from "node:url";
+import fs from "node:fs";
+
+import { attachUser } from "./auth.js";
+import { corsOptions, helmetMw, hppMw, globalLimiter, authLimiter } from "./security.js";
+import { stripeWebhookHandler } from "./routes/stripeWebhook.js";
+import authRoutes from "./routes/authRoutes.js";
+import courseRoutes from "./routes/courseRoutes.js";
+import enrollmentRoutes from "./routes/enrollmentRoutes.js";
+import teacherRoutes from "./routes/teacherRoutes.js";
+import liveRoutes from "./routes/liveRoutes.js";
+import adminRoutes from "./routes/adminRoutes.js";
+import reviewRoutes from "./routes/reviewRoutes.js";
+import meRoutes from "./routes/meRoutes.js";
+
+const app = express();
+
+app.set("trust proxy", 1);
+app.use(helmetMw);
+app.use(cors(corsOptions));
+app.use(hppMw);
+
+// Stripe needs the raw, unparsed body to verify the webhook signature —
+// must be registered before the global express.json() below.
+app.post("/api/stripe/webhook", express.raw({ type: "application/json" }), stripeWebhookHandler);
+
+app.use(express.json({ limit: "2mb" }));
+app.use("/api", globalLimiter);
+app.use(attachUser);
+
+app.get("/api/health", (_req, res) => res.json({ ok: true, service: "jdlearn" }));
+
+app.use("/api/auth", authLimiter, authRoutes);
+app.use("/api/courses", courseRoutes);
+app.use("/api/enrollment", enrollmentRoutes);
+app.use("/api/teacher", teacherRoutes);
+app.use("/api/live", liveRoutes);
+app.use("/api/admin", adminRoutes);
+app.use("/api/reviews", reviewRoutes);
+app.use("/api/me", meRoutes);
+
+// Production: serve the built frontend (dist) as static + SPA fallback
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+const distPath = path.resolve(__dirname, "../../dist");
+if (fs.existsSync(distPath)) {
+  app.use(express.static(distPath));
+  app.get(/^(?!\/api).*/, (_req, res) => {
+    res.sendFile(path.join(distPath, "index.html"));
+  });
+}
+
+// Central error handler — never leak stack traces in production
+app.use((err, _req, res, _next) => {
+  console.error(err);
+  const isProd = process.env.NODE_ENV === "production";
+  res.status(err.status || 500).json({
+    error: isProd ? "Internal server error" : err.message,
+  });
+});
+
+const PORT = process.env.PORT || 4000;
+app.listen(PORT, () => {
+  console.log(`🚀 JD Learn API running on http://localhost:${PORT}`);
+});

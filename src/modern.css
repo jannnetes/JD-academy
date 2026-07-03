@@ -1,0 +1,113 @@
+/* ============================================================
+   MODERN DESIGN LAYER — aurora bg, support panel, polish
+   Keeps the warm amber identity, adds depth + motion.
+   ============================================================ */
+
+/* ---- Animated aurora background ---- */
+.aurora {
+  position: fixed;
+  inset: 0;
+  z-index: -2;
+  overflow: hidden;
+  pointer-events: none;
+}
+.aurora-blob {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(90px);
+  opacity: 0.5;
+  will-change: transform;
+}
+.aurora-blob.a1 {
+  width: 520px; height: 520px; top: -120px; left: -80px;
+  background: radial-gradient(circle, #ffd56b, transparent 70%);
+  animation: drift1 22s ease-in-out infinite;
+}
+.aurora-blob.a2 {
+  width: 460px; height: 460px; top: 30%; right: -120px;
+  background: radial-gradient(circle, #f7a072, transparent 70%);
+  animation: drift2 26s ease-in-out infinite;
+}
+.aurora-blob.a3 {
+  width: 400px; height: 400px; bottom: -140px; left: 35%;
+  background: radial-gradient(circle, #f2a900, transparent 70%);
+  animation: drift3 30s ease-in-out infinite;
+  opacity: 0.35;
+}
+@keyframes drift1 { 0%,100% { transform: translate(0,0) scale(1); } 50% { transform: translate(80px,60px) scale(1.15); } }
+@keyframes drift2 { 0%,100% { transform: translate(0,0) scale(1); } 50% { transform: translate(-70px,40px) scale(1.1); } }
+@keyframes drift3 { 0%,100% { transform: translate(0,0) scale(1); } 50% { transform: translate(40px,-60px) scale(1.2); } }
+
+/* subtle film grain for premium texture */
+.aurora-grain {
+  position: absolute; inset: 0; opacity: 0.04;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .aurora-blob { animation: none; }
+}
+
+/* ---- Polished glass + cards ---- */
+.glass {
+  box-shadow: 0 10px 40px -18px rgba(21, 21, 21, 0.18);
+}
+.tilt { height: 100%; }
+.course-card { will-change: transform; }
+.course-level-badge {
+  position: absolute; top: 14px; right: 14px;
+  background: rgba(21, 21, 21, 0.82); color: var(--white);
+  padding: 5px 12px; border-radius: 999px; font-weight: 850; font-size: 12px;
+}
+.dash-card, .badge-card, .stat-card { transition: transform 0.25s, box-shadow 0.25s; }
+.dash-card:hover { transform: translateY(-5px); box-shadow: 0 20px 44px -20px rgba(224,122,63,0.4); }
+.badge-card.earned:hover { transform: translateY(-5px) rotate(-1.5deg); }
+
+/* buttons get a smooth press + sheen */
+.primary-btn, .secondary-btn {
+  transition: transform 0.18s ease, box-shadow 0.18s ease, background 0.2s;
+}
+.primary-btn:hover { transform: translateY(-2px); }
+.primary-btn:active, .secondary-btn:active { transform: translateY(0) scale(0.98); }
+
+/* dash tabs underline-grow feel */
+.dash-tab { position: relative; overflow: hidden; }
+.dash-tab.active { box-shadow: 0 8px 20px -8px rgba(21,21,21,0.4); }
+
+/* ---- Support panel (Q&A + contact in cabinet) ---- */
+.support-wrap {
+  display: grid;
+  grid-template-columns: 1.6fr 1fr;
+  gap: 22px;
+  align-items: start;
+}
+.support-faq { padding: 30px; }
+.support-faq h3 { margin: 4px 0 20px; font-size: 24px; letter-spacing: -0.02em; }
+
+.faq-accordion { display: flex; flex-direction: column; gap: 10px; }
+.faq-item { border: 1px solid var(--line); border-radius: 18px; background: var(--white); overflow: hidden; transition: border-color 0.2s; }
+.faq-item.open { border-color: var(--accent); }
+.faq-q {
+  width: 100%; display: flex; justify-content: space-between; align-items: center; gap: 14px;
+  padding: 18px 20px; background: transparent; border: none; cursor: pointer;
+  font-weight: 850; font-size: 16px; text-align: left;
+}
+.faq-toggle { font-size: 22px; color: var(--accent-2); flex-shrink: 0; }
+.faq-a { overflow: hidden; }
+.faq-a p { margin: 0; padding: 0 20px 20px; color: var(--muted); }
+
+.support-side { display: flex; flex-direction: column; gap: 22px; }
+.ask-card, .contact-card { padding: 28px; }
+.ask-card h3, .contact-card h3 { margin: 4px 0 14px; font-size: 20px; }
+.contact-links { display: flex; flex-direction: column; gap: 10px; margin-top: 14px; }
+.contact-link {
+  display: flex; align-items: center; gap: 12px; padding: 14px 18px;
+  border-radius: 16px; border: 1px solid var(--line); background: var(--white);
+  font-weight: 800; transition: 0.2s;
+}
+.contact-link:hover { border-color: var(--accent); transform: translateX(4px); }
+.contact-link span { font-size: 20px; }
+
+@media (max-width: 900px) {
+  .support-wrap { grid-template-columns: 1fr; }
+}
