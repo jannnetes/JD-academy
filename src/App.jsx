@@ -1,19 +1,27 @@
+import { Suspense, lazy } from "react";
 import { Routes, Route, useLocation } from "react-router-dom";
 import { AnimatePresence, motion } from "framer-motion";
 import Home from "./pages/Home.jsx";
-import Questions from "./pages/Questions.jsx";
 import Auth from "./pages/Auth.jsx";
-import Catalog from "./pages/Catalog.jsx";
-import CourseDetail from "./pages/CourseDetail.jsx";
-import Teachers from "./pages/Teachers.jsx";
-import About from "./pages/About.jsx";
-import Live from "./pages/Live.jsx";
-import Learn from "./pages/Learn.jsx";
-import Builder from "./pages/Builder.jsx";
-import Dashboard from "./pages/Dashboard.jsx";
 import ProtectedRoute from "./components/ProtectedRoute.jsx";
 import AuroraBackground from "./components/AuroraBackground.jsx";
 import Reveal from "./components/Reveal.jsx";
+
+// Lazy-loaded: everything past the landing/auth pages, so the first paint
+// for ad-driven traffic (Home, Login, Register) doesn't pay for the JS of
+// pages most visitors won't touch on their first visit.
+const Questions = lazy(() => import("./pages/Questions.jsx"));
+const ResetPassword = lazy(() => import("./pages/ResetPassword.jsx"));
+const PrivacyPolicy = lazy(() => import("./pages/Legal.jsx").then((m) => ({ default: m.PrivacyPolicy })));
+const TermsOfService = lazy(() => import("./pages/Legal.jsx").then((m) => ({ default: m.TermsOfService })));
+const Catalog = lazy(() => import("./pages/Catalog.jsx"));
+const CourseDetail = lazy(() => import("./pages/CourseDetail.jsx"));
+const Teachers = lazy(() => import("./pages/Teachers.jsx"));
+const About = lazy(() => import("./pages/About.jsx"));
+const Live = lazy(() => import("./pages/Live.jsx"));
+const Learn = lazy(() => import("./pages/Learn.jsx"));
+const Builder = lazy(() => import("./pages/Builder.jsx"));
+const Dashboard = lazy(() => import("./pages/Dashboard.jsx"));
 
 export default function App() {
   const location = useLocation();
@@ -39,41 +47,46 @@ export default function App() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.32, ease: [0.22, 1, 0.36, 1] }}
       >
-          <Routes location={location}>
-            <Route path="/" element={<Home />} />
-            <Route path="/questions" element={<Questions />} />
-            <Route path="/login" element={<Auth initialMode="login" />} />
-            <Route path="/register" element={<Auth initialMode="register" />} />
-            <Route path="/catalog" element={<Catalog />} />
-            <Route path="/teachers" element={<Teachers />} />
-            <Route path="/about" element={<About />} />
-            <Route path="/live" element={<Live />} />
-            <Route path="/course/:id" element={<CourseDetail />} />
-            <Route
-              path="/dashboard"
-              element={
-                <ProtectedRoute>
-                  <Dashboard />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/learn/:courseId"
-              element={
-                <ProtectedRoute>
-                  <Learn />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/builder/:courseId"
-              element={
-                <ProtectedRoute roles={["teacher", "admin"]}>
-                  <Builder />
-                </ProtectedRoute>
-              }
-            />
-          </Routes>
+          <Suspense fallback={null}>
+            <Routes location={location}>
+              <Route path="/" element={<Home />} />
+              <Route path="/questions" element={<Questions />} />
+              <Route path="/login" element={<Auth initialMode="login" />} />
+              <Route path="/register" element={<Auth initialMode="register" />} />
+              <Route path="/reset-password" element={<ResetPassword />} />
+              <Route path="/privacy" element={<PrivacyPolicy />} />
+              <Route path="/terms" element={<TermsOfService />} />
+              <Route path="/catalog" element={<Catalog />} />
+              <Route path="/teachers" element={<Teachers />} />
+              <Route path="/about" element={<About />} />
+              <Route path="/live" element={<Live />} />
+              <Route path="/course/:id" element={<CourseDetail />} />
+              <Route
+                path="/dashboard"
+                element={
+                  <ProtectedRoute>
+                    <Dashboard />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/learn/:courseId"
+                element={
+                  <ProtectedRoute>
+                    <Learn />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/builder/:courseId"
+                element={
+                  <ProtectedRoute roles={["teacher", "admin"]}>
+                    <Builder />
+                  </ProtectedRoute>
+                }
+              />
+            </Routes>
+          </Suspense>
       </motion.div>
     </>
   );

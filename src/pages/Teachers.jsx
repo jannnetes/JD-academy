@@ -10,7 +10,7 @@ export default function Teachers() {
 
   useEffect(() => { api("/courses").then(setCourses).catch(() => {}); }, []);
 
-  const teachers = useMemo(() => {
+  const allTeachers = useMemo(() => {
     const map = courses.reduce((acc, c) => {
       const t = c.teacher; if (!t) return acc;
       if (!acc[t.id]) acc[t.id] = { ...t, count: 0, students: 0, fields: new Set(), rsum: 0, rn: 0 };
@@ -18,10 +18,13 @@ export default function Teachers() {
       if (c.rating) { acc[t.id].rsum += c.rating; acc[t.id].rn++; }
       return acc;
     }, {});
-    let l = Object.values(map);
-    if (q) l = l.filter((t) => t.name.toLowerCase().includes(q.toLowerCase()) || [...t.fields].some((f) => f.toLowerCase().includes(q.toLowerCase())));
-    return l;
-  }, [courses, q]);
+    return Object.values(map);
+  }, [courses]);
+
+  const teachers = useMemo(() => {
+    if (!q) return allTeachers;
+    return allTeachers.filter((t) => t.name.toLowerCase().includes(q.toLowerCase()) || [...t.fields].some((f) => f.toLowerCase().includes(q.toLowerCase())));
+  }, [allTeachers, q]);
 
   const initials = (n) => n.split(" ").map((w) => w[0]).slice(0, 2).join("").toUpperCase();
 
@@ -31,7 +34,7 @@ export default function Teachers() {
       <section className="bs bs-blue">
         <div className="bw">
           <h1 className="bs-hero-title" style={{ fontSize: "clamp(80px,16vw,200px)" }}>
-            <span className="line" style={{ color: "#C8FF00" }}>200+</span>
+            <span className="line" style={{ color: "#C8FF00" }}>{allTeachers.length}</span>
             <span className="line filled">EXPERTS</span>
           </h1>
           <input className="edu-search" placeholder="Search by name or field…" value={q} onChange={(e) => setQ(e.target.value)} />

@@ -1,7 +1,8 @@
 import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
-import { motion, useInView } from "framer-motion";
+import { useInView } from "framer-motion";
 import Header from "../components/Header.jsx";
+import { api } from "../api";
 
 function Num({ to, suffix, label }) {
   const ref = useRef(null);
@@ -28,6 +29,16 @@ const values = [
 ];
 
 export default function About() {
+  const [stats, setStats] = useState({ students: 0, courses: 0, teachers: 0 });
+
+  useEffect(() => {
+    api("/courses").then((courses) => {
+      const teacherIds = new Set(courses.map((c) => c.teacher?.id).filter(Boolean));
+      const students = courses.reduce((s, c) => s + (c.students || 0), 0);
+      setStats({ students, courses: courses.length, teachers: teacherIds.size });
+    }).catch(() => {});
+  }, []);
+
   return (
     <div className="bold bs-page">
       <Header />
@@ -59,9 +70,9 @@ export default function About() {
 
       <section className="bs bs-cream">
         <div className="bw bs-numbers-grid" style={{ gridTemplateColumns: "repeat(4,1fr)" }}>
-          <Num to={10} suffix="K" label="students" />
-          <Num to={500} suffix="+" label="courses" />
-          <Num to={200} suffix="+" label="teachers" />
+          <Num to={stats.students} suffix="" label="students" />
+          <Num to={stats.courses} suffix="" label="courses" />
+          <Num to={stats.teachers} suffix="" label="teachers" />
           <Num to={18} suffix="" label="categories" />
         </div>
       </section>

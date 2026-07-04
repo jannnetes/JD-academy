@@ -4,7 +4,7 @@ import crypto from "node:crypto";
 import { z } from "zod";
 import { prisma } from "../prisma.js";
 import { signToken, requireAuth } from "../auth.js";
-import { sendMail, buildConfirmationEmail } from "../email.js";
+import { sendMail, buildConfirmationEmail, buildPasswordResetEmail } from "../email.js";
 
 const router = Router();
 
@@ -88,6 +88,51 @@ router.get("/verify", async (req, res) => {
 
 router.get("/me", requireAuth, (req, res) => {
   res.json({ user: req.user });
+});
+
+// Always responds with the same generic message, whether or not the email
+// exists — avoids leaking which addresses are registered.
+router.post("/forgot-password", async (req, res) => {
+  const { email, locale } = req.body || {};
+  const generic = { message: "If that email is registered, a reset link is on its way." };
+  if (!email) return res.json(generic);
+
+  const user = await prisma.user.findUnique({ where: { email } });
+  if (!user) return res.json(generic);
+
+  const token = crypto.randomBytes(32).toString("hex");
+  await prisma.user.update({
+    where: { id: user.id },
+    data: { resetToken: token, resetTokenExp: new Date(Date.now() + 60 * 60 * 1000) },
+  });
+
+  try {
+    const mail = buildPasswordResetEmail(user.name, token, locale || user.preferredLocale || "en");
+    await sendMail({ ...mail, to: user.email });
+  } catch (err) {
+    console.error("Password reset email send failed:", err.message);
+  }
+
+  res.json(generic);
+});
+
+router.post("/reset-password", async (req, res) => {
+  const { token, password } = req.body || {};
+  if (!token || !password || password.length < 6) {
+    return res.status(400).json({ error: "Invalid token or password too short" });
+  }
+  const user = await prisma.user.findFirst({
+    where: { resetToken: token, resetTokenExp: { gt: new Date() } },
+  });
+  if (!user) {
+    return res.status(400).json({ error: "This reset link is invalid or has expired." });
+  }
+  const hash = await bcrypt.hash(password, 12);
+  await prisma.user.update({
+    where: { id: user.id },
+    data: { password: hash, resetToken: null, resetTokenExp: null },
+  });
+  res.json({ message: "Password updated. You can now sign in." });
 });
 
 export default router;

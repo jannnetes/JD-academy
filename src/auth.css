@@ -61,6 +61,11 @@
 }
 .au-pw-toggle:hover { opacity: 1; }
 
+.au-forgot { display: inline-block; font-family: "Space Mono", monospace; font-size: 12px; color: rgba(13,13,13,0.5); margin: -8px 0 4px; text-decoration: none; }
+.au-forgot:hover { color: #f73b20; text-decoration: underline; }
+.au-legal { font-size: 12px; color: rgba(13,13,13,0.45); text-align: center; margin: 4px 0 0; }
+.au-legal a { color: rgba(13,13,13,0.7); text-decoration: underline; }
+.au-legal a:hover { color: #f73b20; }
 .au-error { font-family: "Space Mono", monospace; font-size: 12px; color: #8b0000; margin: -6px 0 0; }
 .au-info { font-family: "Space Mono", monospace; font-size: 12px; color: #4a7856; margin: -6px 0 0; line-height: 1.5; }
 .au-switch { font-size: 14px; color: rgba(13,13,13,0.5); margin: 24px 0 0; }

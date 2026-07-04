@@ -28,6 +28,10 @@ model User {
   verifyTokenExp  DateTime?
   preferredLocale String    @default("en")
 
+  // password reset
+  resetToken    String?
+  resetTokenExp DateTime?
+
   // gamification
   xp            Int      @default(0)
   streak        Int      @default(0)

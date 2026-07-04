@@ -1,0 +1,8 @@
+User-agent: *
+Allow: /
+Disallow: /dashboard
+Disallow: /builder
+Disallow: /learn
+Disallow: /reset-password
+
+Sitemap: https://jd-learn.netlify.app/sitemap.xml

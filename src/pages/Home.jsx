@@ -24,10 +24,14 @@ export default function Home() {
   const root = useRef(null);
   const { t } = useI18n();
   const [courses, setCourses] = useState([]);
+  const [totalCourses, setTotalCourses] = useState(null);
   const [sessions, setSessions] = useState([]);
 
   useEffect(() => {
-    api("/courses").then((c) => setCourses(c.slice(0, 6))).catch(() => {});
+    api("/courses").then((c) => {
+      setCourses(c.slice(0, 6));
+      setTotalCourses(c.length);
+    }).catch(() => {});
     api("/live").then(setSessions).catch(() => {});
   }, []);
 
@@ -70,7 +74,9 @@ export default function Home() {
           </h1>
           <div className="ef-hero-foot">
             <Link to="/register" className="ef-pill-cta" data-cursor="GO">{t("hero.cta")}</Link>
-            <span className="ef-mono">{t("hero.note")}</span>
+            {totalCourses !== null && (
+              <span className="ef-mono">{t("hero.note").replace("{n}", totalCourses)}</span>
+            )}
           </div>
         </div>
         <div className="ef-rule" />
@@ -191,7 +197,13 @@ export default function Home() {
             <a href={SOCIAL.support} target="_blank" rel="noreferrer" className="ef-footer-q">{t("footer.questions")}</a>
           </div>
         </div>
-        <div className="ef-wrap ef-footer-copy ef-mono">{t("footer.rights")}</div>
+        <div className="ef-wrap ef-footer-copy ef-mono">
+          {t("footer.rights")}
+          <span style={{ marginLeft: 18 }}>
+            <Link to="/privacy" style={{ color: "inherit", opacity: 0.6, marginRight: 14 }}>Privacy</Link>
+            <Link to="/terms" style={{ color: "inherit", opacity: 0.6 }}>Terms</Link>
+          </span>
+        </div>
       </footer>
     </div>
   );

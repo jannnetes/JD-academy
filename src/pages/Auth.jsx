@@ -129,12 +129,22 @@ export default function Auth({ initialMode = "login" }) {
               </div>
             </label>
 
+            {mode === "login" && (
+              <Link to="/reset-password" className="au-forgot">{t("auth.forgotLink")}</Link>
+            )}
+
             {error && <p className="au-error">! {error}</p>}
             {info && <p className="au-info">{info}</p>}
 
             <button className="au-submit" disabled={loading}>
               {loading ? <span className="au-spin" /> : (mode === "login" ? t("auth.submitIn") : t("auth.submitUp"))}
             </button>
+
+            {mode === "register" && (
+              <p className="au-legal">
+                By creating an account you agree to our <Link to="/terms">Terms</Link> and <Link to="/privacy">Privacy Policy</Link>.
+              </p>
+            )}
           </form>
 
           <p className="au-switch">

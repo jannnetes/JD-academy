@@ -38,7 +38,7 @@ export default function Catalog() {
             <span className="line filled">CA<span className="cat-hyphen">-</span>TA<span className="cat-hyphen">-</span>LOG</span>
             <span className="line outline">COURSES</span>
           </h1>
-          <p className="cat-sub">500+ courses from top teachers · {courses.length} available now</p>
+          <p className="cat-sub">Real courses from real teachers · {courses.length} available now, growing weekly</p>
 
           <div className="cat-bar">
             <div className="cat-filters">
