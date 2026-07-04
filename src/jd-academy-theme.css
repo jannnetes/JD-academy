@@ -41,6 +41,17 @@ html, body, #root, main, .container {
   text-transform: none !important;
   transition: background 0.2s ease !important;
 }
+/* Dashboard buttons use their own outline-pill style (dashboard.css) —
+   our border reset above stripped the outline, leaving near-invisible
+   coral text with no visible button shape until hover. Restore it. */
+.dash .primary-btn {
+  border: 2px solid var(--coral) !important;
+  color: var(--coral) !important;
+  -webkit-text-fill-color: var(--coral) !important;
+}
+.dash .primary-btn:hover {
+  border-color: var(--coral) !important;
+}
 .primary-btn:hover { background: var(--coral) !important; }
 
 .secondary-btn {

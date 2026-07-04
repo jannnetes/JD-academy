@@ -113,7 +113,7 @@ router.get("/:id", async (req, res) => {
 // Teacher: create course
 router.post("/", requireAuth, requireRole("teacher", "admin"), async (req, res) => {
   const { title, description, industry, topics, basePrice, cover, level } = req.body || {};
-  if (!title || !industry || !basePrice) {
+  if (!title || !industry || basePrice === undefined || basePrice === null || basePrice === "" || Number(basePrice) < 0) {
     return res.status(400).json({ error: "Заповніть назву, галузь і ціну" });
   }
   const course = await prisma.course.create({
