@@ -42,7 +42,7 @@ app.use(express.json({ limit: "2mb" }));
 app.use("/api", globalLimiter);
 app.use(attachUser);
 
-app.get("/api/health", (_req, res) => res.json({ ok: true, service: "jdlearn" }));
+app.get("/api/health", (_req, res) => res.json({ ok: true, service: "jdacademy" }));
 
 app.use("/api/auth", authLimiter, authRoutes);
 app.use("/api/courses", courseRoutes);
@@ -74,5 +74,5 @@ app.use((err, _req, res, _next) => {
 
 const PORT = process.env.PORT || 4000;
 app.listen(PORT, () => {
-  console.log(`🚀 JD Learn API running on http://localhost:${PORT}`);
+  console.log(`🚀 JD Academy API running on http://localhost:${PORT}`);
 });

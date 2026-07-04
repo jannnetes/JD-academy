@@ -12,20 +12,20 @@ export async function sendMail({ to, subject, html }) {
   }
   await sgMail.send({
     to,
-    from: { email: process.env.DEFAULT_FROM_EMAIL, name: process.env.FROM_NAME || "JD Learn" },
+    from: { email: process.env.DEFAULT_FROM_EMAIL, name: process.env.FROM_NAME || "JD Academy" },
     subject,
     html,
   });
 }
 
 const SUBJECTS = {
-  uk: "Підтвердіть реєстрацію — JD Learn",
-  ru: "Подтвердите регистрацию — JD Learn",
-  de: "Bestätigen Sie Ihre Registrierung — JD Learn",
-  en: "Confirm your registration — JD Learn",
+  uk: "Підтвердіть реєстрацію — JD Academy",
+  ru: "Подтвердите регистрацию — JD Academy",
+  de: "Bestätigen Sie Ihre Registrierung — JD Academy",
+  en: "Confirm your registration — JD Academy",
 };
 
-// Branded JD Learn confirmation email (Swiss editorial).
+// Branded JD Academy confirmation email (Swiss editorial).
 export function buildConfirmationEmail(name, token, locale = "en") {
   const confirmUrl = `${process.env.API_URL}/api/auth/verify?token=${token}`;
 
@@ -44,7 +44,7 @@ export function buildConfirmationEmail(name, token, locale = "en") {
     .footer a{color:#F73B20;text-decoration:none;margin-right:14px;}
   </style></head><body>
     <div class="wrapper">
-      <div class="header"><span class="logo"><span class="jd">JD</span> <span class="ln">LEARN</span></span></div>
+      <div class="header"><span class="logo"><span class="jd">JD</span> <span class="ln">ACADEMY</span></span></div>
       <div class="body">
         <h1 class="title">CONFIRM<br><span class="outline">EMAIL</span></h1>
         <p class="sub">Hi ${name}, one click to start your learning journey.</p>
@@ -52,7 +52,7 @@ export function buildConfirmationEmail(name, token, locale = "en") {
         <p class="sub" style="margin-top:30px;font-size:13px;">Link expires in 24 hours.<br>If you didn't register, ignore this email.</p>
       </div>
       <div class="footer">
-        <div>© 2024 JD Learn · ${process.env.DEFAULT_FROM_EMAIL}</div>
+        <div>© 2024 JD Academy · ${process.env.DEFAULT_FROM_EMAIL}</div>
         <div style="margin-top:12px;">
           <a href="https://t.me/jd_learn_school">Telegram Channel</a>
           <a href="https://www.instagram.com/jd.learn">Instagram</a>

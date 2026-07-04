@@ -1,4 +1,4 @@
-# Deploying JD Learn
+# Deploying JD Academy
 
 Your **frontend** is already live on Netlify (`jd-learn.netlify.app`). It shows
 "Server error (404)" on registration because the **backend (server) is not
@@ -41,7 +41,7 @@ EMAIL_PORT            = 587
 EMAIL_HOST_USER       = jd.school.admin@gmail.com
 EMAIL_HOST_PASSWORD   = your_gmail_app_password
 DEFAULT_FROM_EMAIL    = jd.school.admin@gmail.com
-FROM_NAME             = JD Learn
+FROM_NAME             = JD Academy
 STRIPE_SECRET_KEY     = sk_live_...   ← from Stripe Dashboard → Developers → API keys
 STRIPE_WEBHOOK_SECRET = whsec_...     ← from the webhook endpoint you create in Step 4b
 ```

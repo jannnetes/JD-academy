@@ -15,8 +15,8 @@ const messages = {
     courses: { label: "COURSES", h1: "POPULAR", h2: "COURSES", enroll: "ENROLL →", lessons: "lessons" },
     live: { label: "REAL-TIME", weekly: "LIVE LESSONS WEEKLY", updating: "Schedule updating…" },
     manifesto: { label: "PLATFORM", text1: "Education as a ", em: "system", text2: " — a clear goal, a personal path, a measurable result." },
-    cta: { l1: "START", l2: "TODAY", student: "I'M A STUDENT →", teacher: "I'M A TEACHER →", copy: "© 2024 JD Learn — KNOWLEDGE WITHOUT BORDERS" },
-    footer: { follow: "FOLLOW US", questions: "Questions? → @jd_learn_admin", rights: "© 2024 JD Learn. All rights reserved." },
+    cta: { l1: "START", l2: "TODAY", student: "I'M A STUDENT →", teacher: "I'M A TEACHER →", copy: "© 2024 JD Academy — KNOWLEDGE WITHOUT BORDERS" },
+    footer: { follow: "FOLLOW US", questions: "Questions? → @jd_learn_admin", rights: "© 2024 JD Academy. All rights reserved." },
     auth: { in1: "WELCOME", in2: "BACK", up1: "START", up2: "NOW", subIn: "Sign in to continue learning.", subUp: "Create your account in a minute.", email: "EMAIL", password: "PASSWORD", name: "NAME", youAre: "YOU ARE:", student: "STUDENT", teacher: "TEACHER", admin: "ADMIN", submitIn: "SIGN IN →", submitUp: "CREATE ACCOUNT →", noAcc: "No account? ", hasAcc: "Already have an account? ", signup: "Sign up", signin: "Sign in", demo: "DEMO ACCOUNT:", community: "JOIN OUR COMMUNITY" },
   },
   uk: {
@@ -26,8 +26,8 @@ const messages = {
     courses: { label: "КУРСИ", h1: "ПОПУЛЯРНІ", h2: "КУРСИ", enroll: "КУПИТИ →", lessons: "уроків" },
     live: { label: "У РЕАЛЬНОМУ ЧАСІ", weekly: "ЖИВІ УРОКИ ЩОТИЖНЯ", updating: "Розклад оновлюється…" },
     manifesto: { label: "ПЛАТФОРМА", text1: "Освіта як ", em: "система", text2: " — чітка ціль, персональний маршрут, вимірюваний результат." },
-    cta: { l1: "ПОЧНИ", l2: "СЬОГОДНІ", student: "Я УЧЕНЬ →", teacher: "Я ВИКЛАДАЧ →", copy: "© 2024 JD Learn — ЗНАННЯ БЕЗ КОРДОНІВ" },
-    footer: { follow: "СТЕЖТЕ ЗА НАМИ", questions: "Питання? → @jd_learn_admin", rights: "© 2024 JD Learn. Усі права захищені." },
+    cta: { l1: "ПОЧНИ", l2: "СЬОГОДНІ", student: "Я УЧЕНЬ →", teacher: "Я ВИКЛАДАЧ →", copy: "© 2024 JD Academy — ЗНАННЯ БЕЗ КОРДОНІВ" },
+    footer: { follow: "СТЕЖТЕ ЗА НАМИ", questions: "Питання? → @jd_learn_admin", rights: "© 2024 JD Academy. Усі права захищені." },
     auth: { in1: "З ПОВЕР-", in2: "НЕННЯМ", up1: "ПОЧНИ", up2: "ЗАРАЗ", subIn: "Увійдіть, щоб продовжити навчання.", subUp: "Створіть акаунт за хвилину.", email: "EMAIL", password: "ПАРОЛЬ", name: "ІМ'Я", youAre: "ТИ Є:", student: "УЧЕНЬ", teacher: "ВИКЛАДАЧ", admin: "АДМІН", submitIn: "УВІЙТИ →", submitUp: "СТВОРИТИ АКАУНТ →", noAcc: "Немає акаунту? ", hasAcc: "Вже є акаунт? ", signup: "Зареєструватися", signin: "Увійти", demo: "ДЕМО АКАУНТ:", community: "ПРИЄДНУЙТЕСЬ ДО СПІЛЬНОТИ" },
   },
   ru: {
@@ -37,8 +37,8 @@ const messages = {
     courses: { label: "КУРСЫ", h1: "ПОПУЛЯРНЫЕ", h2: "КУРСЫ", enroll: "КУПИТЬ →", lessons: "уроков" },
     live: { label: "В РЕАЛЬНОМ ВРЕМЕНИ", weekly: "ЖИВЫЕ УРОКИ ЕЖЕНЕДЕЛЬНО", updating: "Расписание обновляется…" },
     manifesto: { label: "ПЛАТФОРМА", text1: "Образование как ", em: "система", text2: " — чёткая цель, персональный маршрут, измеримый результат." },
-    cta: { l1: "НАЧНИ", l2: "СЕГОДНЯ", student: "Я УЧЕНИК →", teacher: "Я ПРЕПОДАВАТЕЛЬ →", copy: "© 2024 JD Learn — ЗНАНИЯ БЕЗ ГРАНИЦ" },
-    footer: { follow: "МЫ В СОЦСЕТЯХ", questions: "Вопросы? → @jd_learn_admin", rights: "© 2024 JD Learn. Все права защищены." },
+    cta: { l1: "НАЧНИ", l2: "СЕГОДНЯ", student: "Я УЧЕНИК →", teacher: "Я ПРЕПОДАВАТЕЛЬ →", copy: "© 2024 JD Academy — ЗНАНИЯ БЕЗ ГРАНИЦ" },
+    footer: { follow: "МЫ В СОЦСЕТЯХ", questions: "Вопросы? → @jd_learn_admin", rights: "© 2024 JD Academy. Все права защищены." },
     auth: { in1: "С ВОЗВРА-", in2: "ЩЕНИЕМ", up1: "НАЧНИ", up2: "СЕЙЧАС", subIn: "Войдите, чтобы продолжить обучение.", subUp: "Создайте аккаунт за минуту.", email: "EMAIL", password: "ПАРОЛЬ", name: "ИМЯ", youAre: "ТЫ:", student: "УЧЕНИК", teacher: "ПРЕПОДАВАТЕЛЬ", admin: "АДМИН", submitIn: "ВОЙТИ →", submitUp: "СОЗДАТЬ АККАУНТ →", noAcc: "Нет аккаунта? ", hasAcc: "Уже есть аккаунт? ", signup: "Зарегистрироваться", signin: "Войти", demo: "ДЕМО АККАУНТ:", community: "ПРИСОЕДИНЯЙТЕСЬ К СООБЩЕСТВУ" },
   },
   de: {
@@ -48,8 +48,8 @@ const messages = {
     courses: { label: "KURSE", h1: "BELIEBTE", h2: "KURSE", enroll: "KAUFEN →", lessons: "Lektionen" },
     live: { label: "ECHTZEIT", weekly: "WÖCHENTLICHE LIVE-KURSE", updating: "Zeitplan wird aktualisiert…" },
     manifesto: { label: "PLATTFORM", text1: "Bildung als ", em: "System", text2: " — ein klares Ziel, ein persönlicher Weg, ein messbares Ergebnis." },
-    cta: { l1: "STARTE", l2: "HEUTE", student: "ICH BIN SCHÜLER →", teacher: "ICH BIN LEHRER →", copy: "© 2024 JD Learn — WISSEN OHNE GRENZEN" },
-    footer: { follow: "FOLGE UNS", questions: "Fragen? → @jd_learn_admin", rights: "© 2024 JD Learn. Alle Rechte vorbehalten." },
+    cta: { l1: "STARTE", l2: "HEUTE", student: "ICH BIN SCHÜLER →", teacher: "ICH BIN LEHRER →", copy: "© 2024 JD Academy — WISSEN OHNE GRENZEN" },
+    footer: { follow: "FOLGE UNS", questions: "Fragen? → @jd_learn_admin", rights: "© 2024 JD Academy. Alle Rechte vorbehalten." },
     auth: { in1: "WILL-", in2: "KOMMEN", up1: "STARTE", up2: "JETZT", subIn: "Melde dich an, um weiterzulernen.", subUp: "Erstelle dein Konto in einer Minute.", email: "E-MAIL", password: "PASSWORT", name: "NAME", youAre: "DU BIST:", student: "SCHÜLER", teacher: "LEHRER", admin: "ADMIN", submitIn: "ANMELDEN →", submitUp: "KONTO ERSTELLEN →", noAcc: "Kein Konto? ", hasAcc: "Schon ein Konto? ", signup: "Registrieren", signin: "Anmelden", demo: "DEMO-KONTO:", community: "TRITT UNSERER COMMUNITY BEI" },
   },
 };

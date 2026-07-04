@@ -19,8 +19,8 @@ import "./eduflow.css";
 import "./dashboard.css";
 import "./auth.css";
 import "./dog.css";
-import "./dog.css";
 import "./builder.css";
+import "./jd-academy-theme.css";
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>

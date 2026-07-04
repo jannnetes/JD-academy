@@ -85,7 +85,7 @@ export default function Auth({ initialMode = "login" }) {
       {/* LEFT — form */}
       <motion.div className="au-left" initial={{ opacity: 0, x: -30 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.3, duration: 0.6 }}>
         <div className="au-form-wrap">
-          <span className="au-crumb">JD LEARN / {mode === "login" ? t("nav.signIn") : "SIGN UP"}</span>
+          <span className="au-crumb">JD ACADEMY / {mode === "login" ? t("nav.signIn") : "SIGN UP"}</span>
 
           <div className="au-toggle">
             <button className={mode === "login" ? "on" : ""} onClick={() => setMode("login")}>{t("auth.signin").toUpperCase()}</button>

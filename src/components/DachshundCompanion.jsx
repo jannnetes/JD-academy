@@ -91,11 +91,11 @@ export default function DachshundCompanion({ onBroken }) {
         style={{ left: `${x}%` }}
         onClick={handleClick}
         role="button"
-        aria-label="JD Learn mascot"
+        aria-label="JD Academy mascot"
       >
         <img
           src={IMAGES[mood] || IMAGES.peek}
-          alt="JD Learn dachshund mascot"
+          alt="JD Academy dachshund mascot"
           className="dogc-img"
           style={{ transform: flip ? "scaleX(-1)" : "scaleX(1)" }}
           onError={() => onBroken && onBroken()}

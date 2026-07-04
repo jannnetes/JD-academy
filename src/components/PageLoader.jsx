@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 
-const WORD = "JD LEARN".split("");
+const WORD = "JD ACADEMY".split("");
 
 // Letters fly in from chaos, assemble, then the panel slides up and unmounts.
 export default function PageLoader() {

@@ -1,0 +1,187 @@
+/* ============================================================
+   JD ACADEMY — Swiss editorial theme
+   Loaded LAST (see main.jsx) so it wins over the older redesign
+   layers (checkered grid bg, navy/gold "Leemo" gradient theme).
+   ============================================================ */
+
+:root {
+  --paper:   #F7F4EE;
+  --ink:     #0D0D0D;
+  --coral:   #F73B20;
+  --acid:    #C8FF00;
+  --cobalt:  #1A3FD4;
+  --sage:    #4A7856;
+
+  --font-display: "Bebas Neue", sans-serif;
+  --font-body:    "Space Grotesk", sans-serif;
+  --font-mono:    "Space Mono", monospace;
+
+  --radius-pill: 150px;
+  --radius-card: 16px;
+}
+
+/* ---------- kill the checkered grid everywhere ---------- */
+html, body, #root, main, .container {
+  background-color: var(--paper) !important;
+  background-image: none !important;
+}
+
+/* ---------- buttons: solid pill + outline pill ---------- */
+.primary-btn {
+  background: var(--ink) !important;
+  color: var(--paper) !important;
+  -webkit-text-fill-color: var(--paper) !important;
+  border: none !important;
+  border-radius: var(--radius-pill) !important;
+  padding: 16px 32px !important;
+  font-family: var(--font-body) !important;
+  font-size: 16px !important;
+  font-weight: 600 !important;
+  letter-spacing: normal !important;
+  text-transform: none !important;
+  transition: background 0.2s ease !important;
+}
+.primary-btn:hover { background: var(--coral) !important; }
+
+.secondary-btn {
+  background: transparent !important;
+  color: var(--ink) !important;
+  border: 1.5px solid var(--ink) !important;
+  border-radius: var(--radius-pill) !important;
+  padding: 14px 30px !important;
+  font-family: var(--font-body) !important;
+}
+.secondary-btn:hover { border-color: var(--coral) !important; color: var(--coral) !important; }
+
+/* ---------- tags / badges: outline pill ---------- */
+.tag, .badge {
+  background: transparent !important;
+  color: var(--ink) !important;
+  -webkit-text-fill-color: var(--ink) !important;
+  border: 1.5px solid var(--ink) !important;
+  border-radius: var(--radius-pill) !important;
+  padding: 6px 16px !important;
+  font-family: var(--font-mono) !important;
+  font-size: 11px !important;
+  font-weight: 400 !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.08em !important;
+}
+/* level tag ("Beginner"/"Intermediate") — the only .tag inside .course-meta.big */
+.course-meta.big .tag {
+  border-color: var(--sage) !important;
+  color: var(--sage) !important;
+  -webkit-text-fill-color: var(--sage) !important;
+}
+
+/* ---------- course detail page ---------- */
+.course-detail .eyebrow {
+  font-family: var(--font-mono) !important;
+  font-size: 13px !important;
+  color: var(--coral) !important;
+  text-transform: uppercase;
+  letter-spacing: 0.15em !important;
+  font-weight: 400 !important;
+}
+.detail-main h1 {
+  font-family: var(--font-display) !important;
+  font-size: 72px !important;
+  color: var(--ink) !important;
+  line-height: 0.95 !important;
+  letter-spacing: 0 !important;
+  -webkit-text-fill-color: var(--ink) !important;
+}
+.detail-main h2 {
+  font-family: var(--font-display) !important;
+  font-size: 48px !important;
+  color: var(--ink) !important;
+  -webkit-text-fill-color: var(--ink) !important;
+}
+.detail-main .lead {
+  font-family: var(--font-body);
+  font-size: 18px;
+  opacity: 0.7;
+}
+.course-meta.big {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  text-transform: uppercase;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+.course-meta.big > span:not(:first-child):not(.tag)::before,
+.course-meta.big > span.tag::before {
+  content: "·";
+  margin-right: 6px;
+  opacity: 0.4;
+}
+
+.module-head {
+  font-family: var(--font-body);
+  font-weight: 700;
+  font-size: 18px;
+  color: var(--ink);
+  border-bottom: 1px solid var(--ink);
+  padding-bottom: 10px;
+}
+/* flatten lesson rows into a divided list instead of cards */
+.lesson-row {
+  background: none !important;
+  border: none !important;
+  border-radius: 0 !important;
+  padding: 12px 0 !important;
+  border-bottom: 1px solid rgba(13, 13, 13, 0.1) !important;
+}
+.lesson-num {
+  background: none !important;
+  color: var(--ink) !important;
+  width: auto !important;
+  height: auto !important;
+  border-radius: 0 !important;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  opacity: 0.4;
+  font-weight: 400 !important;
+}
+.lesson-row strong { font-family: var(--font-body); font-size: 16px; font-weight: 500; color: var(--ink); }
+.lesson-row .lock { font-size: 16px; opacity: 0.4; }
+
+/* sidebar buy card */
+.buy-card.glass {
+  border: 1.5px solid var(--ink) !important;
+  border-radius: 24px !important;
+  background: var(--paper) !important;
+  padding: 32px !important;
+  box-shadow: none !important;
+  backdrop-filter: none !important;
+}
+.price-big {
+  font-family: var(--font-display) !important;
+  font-size: 48px !important;
+  font-weight: 400 !important;
+  color: var(--ink) !important;
+  background: none !important;
+  -webkit-background-clip: unset !important;
+  background-clip: unset !important;
+  -webkit-text-fill-color: var(--ink) !important;
+}
+.buy-perks li { font-family: var(--font-body); font-size: 14px; color: var(--ink); list-style: none; }
+.buy-perks li::first-letter { color: var(--sage); }
+
+/* ---------- navbar polish ---------- */
+.lang-btn span:first-child { font-size: 20px; }
+
+/* "GET STARTED →" / "SIGN OUT →" wrapped onto 2 lines inside the pill,
+   which read as clipped text — keep it on one line and don't let the
+   flex nav squeeze it smaller than its content. */
+.ef-pill-out {
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+@media (max-width: 1100px) {
+  .ef-pill-out { font-size: 11px !important; padding: 8px 14px !important; }
+}
+

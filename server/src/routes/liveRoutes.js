@@ -40,7 +40,7 @@ router.post("/", requireAuth, requireRole("teacher", "admin"), async (req, res) 
       price: Number(price) || 0,
       capacity: Number(capacity) || 20,
       courseId: courseId || null,
-      roomUrl: `https://meet.jit.si/jdlearn-${Math.random().toString(36).slice(2, 10)}`,
+      roomUrl: `https://meet.jit.si/jdacademy-${Math.random().toString(36).slice(2, 10)}`,
     },
   });
   res.json(session);

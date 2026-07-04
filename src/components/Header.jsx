@@ -31,7 +31,7 @@ export default function Header() {
       >
         <LanguageSwitcher />
         <span className="ef-nav-sep" />
-        <Link to="/" className="jd-logo" onClick={close}><span className="jd">JD</span><span className="learn">LEARN</span></Link>
+        <Link to="/" className="jd-logo" onClick={close}><span className="jd">JD</span><span className="learn">ACADEMY</span></Link>
         <span className="ef-nav-sep" />
         <div className="ef-nav-links">
           {links.map((l) => (

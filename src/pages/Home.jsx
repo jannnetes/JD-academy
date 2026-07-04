@@ -180,7 +180,7 @@ export default function Home() {
       {/* FOOTER */}
       <footer className="ef-footer ef-ink">
         <div className="ef-wrap ef-footer-grid">
-          <div className="ef-footer-brand"><span className="jd">JD</span><span className="learn-w">LEARN</span></div>
+          <div className="ef-footer-brand"><span className="jd">JD</span><span className="learn-w">ACADEMY</span></div>
           <div className="ef-footer-social">
             <span className="ef-mono" style={{ opacity: 0.5 }}>{t("footer.follow")}</span>
             <div className="ef-social-row">
