@@ -6,6 +6,7 @@ import Auth from "./pages/Auth.jsx";
 import ProtectedRoute from "./components/ProtectedRoute.jsx";
 import AuroraBackground from "./components/AuroraBackground.jsx";
 import Reveal from "./components/Reveal.jsx";
+import CookieConsent from "./components/CookieConsent.jsx";
 
 // Lazy-loaded: everything past the landing/auth pages, so the first paint
 // for ad-driven traffic (Home, Login, Register) doesn't pay for the JS of
@@ -14,6 +15,7 @@ const Questions = lazy(() => import("./pages/Questions.jsx"));
 const ResetPassword = lazy(() => import("./pages/ResetPassword.jsx"));
 const PrivacyPolicy = lazy(() => import("./pages/Legal.jsx").then((m) => ({ default: m.PrivacyPolicy })));
 const TermsOfService = lazy(() => import("./pages/Legal.jsx").then((m) => ({ default: m.TermsOfService })));
+const Impressum = lazy(() => import("./pages/Legal.jsx").then((m) => ({ default: m.Impressum })));
 const Catalog = lazy(() => import("./pages/Catalog.jsx"));
 const CourseDetail = lazy(() => import("./pages/CourseDetail.jsx"));
 const Teachers = lazy(() => import("./pages/Teachers.jsx"));
@@ -29,6 +31,7 @@ export default function App() {
     <>
       <AuroraBackground />
       <Reveal />
+      <CookieConsent />
       <AnimatePresence>
         <motion.div
           key={`sweep-${location.pathname}`}
@@ -56,6 +59,7 @@ export default function App() {
               <Route path="/reset-password" element={<ResetPassword />} />
               <Route path="/privacy" element={<PrivacyPolicy />} />
               <Route path="/terms" element={<TermsOfService />} />
+              <Route path="/impressum" element={<Impressum />} />
               <Route path="/catalog" element={<Catalog />} />
               <Route path="/teachers" element={<Teachers />} />
               <Route path="/about" element={<About />} />

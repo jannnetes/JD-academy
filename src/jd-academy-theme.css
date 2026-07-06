@@ -196,3 +196,43 @@ html, body, #root, main, .container {
   .ef-pill-out { font-size: 11px !important; padding: 8px 14px !important; }
 }
 
+/* ---------- cookie consent banner ---------- */
+.cookie-banner {
+  position: fixed;
+  left: 20px;
+  right: 20px;
+  bottom: 20px;
+  z-index: 9998;
+  max-width: 640px;
+  margin: 0 auto;
+  background: var(--paper);
+  border: 1.5px solid var(--ink);
+  border-radius: var(--radius-card);
+  padding: 20px 24px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 16px;
+  justify-content: space-between;
+  box-shadow: 0 20px 50px -20px rgba(13, 13, 13, 0.25);
+}
+.cookie-text {
+  font-family: var(--font-body);
+  font-size: 13px;
+  color: var(--ink);
+  opacity: 0.8;
+  margin: 0;
+  flex: 1 1 260px;
+}
+.cookie-text a { color: var(--coral); text-decoration: underline; }
+.cookie-actions { display: flex; gap: 10px; flex-shrink: 0; }
+.cookie-actions .primary-btn, .cookie-actions .secondary-btn {
+  padding: 10px 20px !important;
+  font-size: 13px !important;
+}
+@media (max-width: 560px) {
+  .cookie-banner { flex-direction: column; align-items: stretch; }
+  .cookie-actions { justify-content: stretch; }
+  .cookie-actions button { flex: 1; }
+}
+

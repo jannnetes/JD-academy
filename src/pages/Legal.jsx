@@ -31,26 +31,32 @@ function LegalPage({ crumb, title, updated, children }) {
   );
 }
 
+// PLACEHOLDER — fields in [brackets] need your real registered business
+// details (see also /impressum). Have this reviewed once you're set up as
+// self-employed — this is a starting template, not legal advice.
 export function PrivacyPolicy() {
   return (
     <LegalPage crumb="PRIVACY POLICY" title="PRIVACY POLICY" updated="July 2026">
-      <Section title="1. What we collect">
-        <p>When you register, we collect your name, email address, and password (stored as a secure hash — we never see or store your actual password). If you're a teacher, we may also collect a short bio and areas of expertise. If payments are enabled, payment details are handled entirely by our payment processor (Stripe) — we never see or store your card number.</p>
+      <Section title="1. Who is responsible (data controller)">
+        <p>[Your full name], [your address], [your email] — see our <a href="/impressum">Impressum</a> for full details. This is the "controller" under Art. 4(7) GDPR for the data described below.</p>
       </Section>
-      <Section title="2. How we use it">
-        <p>We use your data to run your account (login, course access, progress tracking, certificates), to send you transactional emails (registration confirmation, password resets, course/live-session updates), and to improve the platform. We do not sell your personal data to third parties.</p>
+      <Section title="2. What we collect and why (legal basis)">
+        <p>Account data (name, email, password hash) — collected at registration, necessary to provide the service (Art. 6(1)(b) GDPR — performance of a contract). Teacher profile data (bio, expertise) — provided voluntarily by teachers (Art. 6(1)(a) — consent). Payment data — handled entirely by Stripe when enabled; we never see or store your card number (Art. 6(1)(b)). Analytics/cookie data — only collected after you accept the cookie banner (Art. 6(1)(a) — consent), see section 4.</p>
       </Section>
-      <Section title="3. Third-party services">
-        <p>We use SendGrid to deliver emails, and Railway/Netlify to host our servers and website. When enabled, Stripe processes payments. Each of these providers processes data only as needed to perform their service for us, under their own privacy policies.</p>
+      <Section title="3. Third-party processors">
+        <p>We use SendGrid (USA) to deliver transactional emails, Railway and Netlify to host our servers and website, and Stripe (when enabled) to process payments. Where a processor is based outside the EU/EEA (e.g. the USA), data transfer relies on that provider's Standard Contractual Clauses / adequacy mechanisms. Each provider only processes data necessary to perform their service for us.</p>
       </Section>
-      <Section title="4. Cookies & local storage">
-        <p>We use your browser's local storage to keep you signed in (an authentication token) and to remember your language and theme preference. We don't use third-party advertising trackers at this time.</p>
+      <Section title="4. Cookies & analytics">
+        <p>We use your browser's local storage to keep you signed in and to remember your language/theme — this is necessary for the site to function and doesn't require consent. With your explicit consent (cookie banner), we also use Google Analytics and/or Meta Pixel to understand site usage and measure ad performance. You can withdraw consent at any time by clearing your browser's local storage for this site.</p>
       </Section>
-      <Section title="5. Your rights">
-        <p>You can ask us to correct or delete your account and associated data at any time by contacting us (see below). Deleting your account will remove your personal information, though anonymized records needed for legal/accounting purposes (e.g. completed transactions) may be retained as required by law.</p>
+      <Section title="5. How long we keep it">
+        <p>Account data is kept while your account is active. If you delete your account, we remove your personal data, except records we're legally required to retain (e.g. completed transactions, for tax/accounting purposes under German commercial law).</p>
       </Section>
-      <Section title="6. Contact">
-        <p>Questions about this policy? Reach us via the contact options on our Help &amp; Support page, or email us directly.</p>
+      <Section title="6. Your rights (Art. 15–21 GDPR)">
+        <p>You have the right to access, correct, delete, or export your data, and to object to or restrict certain processing. To exercise any of these, contact us using the details above. You also have the right to lodge a complaint with your local data protection supervisory authority.</p>
+      </Section>
+      <Section title="7. Contact">
+        <p>Questions about this policy? Reach us via the contact options on our Help &amp; Support page, or email us directly at [your@email.com].</p>
       </Section>
     </LegalPage>
   );
@@ -79,6 +85,39 @@ export function TermsOfService() {
       </Section>
       <Section title="7. Changes">
         <p>We may update these terms as the platform evolves. Continued use after a change means you accept the updated terms.</p>
+      </Section>
+    </LegalPage>
+  );
+}
+
+// PLACEHOLDER — replace every [bracketed] field with your real registered
+// business details once you're set up (required by §5 TMG / German law for
+// any commercial website reachable from Germany).
+export function Impressum() {
+  return (
+    <LegalPage crumb="IMPRESSUM" title="IMPRESSUM" updated="July 2026">
+      <Section title="Angaben gemäß § 5 TMG">
+        <p>
+          [Your full name]<br />
+          [Street address]<br />
+          [Postal code, City]<br />
+          [Country]
+        </p>
+      </Section>
+      <Section title="Kontakt">
+        <p>
+          E-Mail: [your@email.com]<br />
+          Telefon: [optional]
+        </p>
+      </Section>
+      <Section title="Umsatzsteuer-ID">
+        <p>[Your VAT ID if applicable, or: "Kein Ausweis der Umsatzsteuer gemäß § 19 UStG (Kleinunternehmerregelung)."]</p>
+      </Section>
+      <Section title="Verantwortlich für den Inhalt nach § 18 Abs. 2 MStV">
+        <p>[Your full name and address, same as above]</p>
+      </Section>
+      <Section title="Streitschlichtung">
+        <p>Die Europäische Kommission stellt eine Plattform zur Online-Streitbeilegung (OS) bereit: <a href="https://ec.europa.eu/consumers/odr" target="_blank" rel="noreferrer">https://ec.europa.eu/consumers/odr</a>. Wir sind nicht verpflichtet und nicht bereit, an einem Streitbeilegungsverfahren vor einer Verbraucherschlichtungsstelle teilzunehmen.</p>
       </Section>
     </LegalPage>
   );

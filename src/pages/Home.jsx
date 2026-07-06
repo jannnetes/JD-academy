@@ -201,7 +201,8 @@ export default function Home() {
           {t("footer.rights")}
           <span style={{ marginLeft: 18 }}>
             <Link to="/privacy" style={{ color: "inherit", opacity: 0.6, marginRight: 14 }}>Privacy</Link>
-            <Link to="/terms" style={{ color: "inherit", opacity: 0.6 }}>Terms</Link>
+            <Link to="/terms" style={{ color: "inherit", opacity: 0.6, marginRight: 14 }}>Terms</Link>
+            <Link to="/impressum" style={{ color: "inherit", opacity: 0.6 }}>Impressum</Link>
           </span>
         </div>
       </footer>
