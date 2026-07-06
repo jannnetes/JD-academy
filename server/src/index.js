@@ -1,4 +1,6 @@
 import "dotenv/config";
+import "./instrument.js";
+import * as Sentry from "@sentry/node";
 import dns from "node:dns";
 import net from "node:net";
 import express from "express";
@@ -62,6 +64,8 @@ if (fs.existsSync(distPath)) {
     res.sendFile(path.join(distPath, "index.html"));
   });
 }
+
+Sentry.setupExpressErrorHandler(app);
 
 // Central error handler — never leak stack traces in production
 app.use((err, _req, res, _next) => {
