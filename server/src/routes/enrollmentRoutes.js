@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { prisma } from "../prisma.js";
-import { requireAuth } from "../auth.js";
+import { requireAuth, signVideoToken } from "../auth.js";
 import { computeBreakdown, applyPromoCode } from "../fees.js";
 import { awardXp, checkBadges } from "../gamification.js";
 import { stripe } from "../stripe.js";
@@ -79,7 +79,7 @@ router.get("/my-courses", requireAuth, async (req, res) => {
           modules: {
             orderBy: { order: "asc" },
             include: {
-              lessons: { orderBy: { order: "asc" }, include: { homework: true } },
+              lessons: { orderBy: { order: "asc" }, select: { id: true, order: true, title: true, durationMin: true, xpReward: true, homework: true } },
             },
           },
         },
@@ -104,7 +104,10 @@ router.get("/learn/:courseId", requireAuth, async (req, res) => {
             include: {
               lessons: {
                 orderBy: { order: "asc" },
-                include: { homework: true, blocks: { orderBy: { order: "asc" } } },
+                select: {
+                  id: true, order: true, title: true, durationMin: true, xpReward: true, content: true,
+                  homework: true, blocks: { orderBy: { order: "asc" } },
+                },
               },
             },
           },
@@ -155,6 +158,28 @@ async function recomputeProgress(enrollment, userId) {
   await prisma.enrollment.update({ where: { id: enrollment.id }, data });
   return { progressPct, certificate };
 }
+
+// Issues a short-lived signed URL for this lesson's video — the real video
+// URL is never handed to the client directly (see routes/streamRoutes.js).
+router.get("/lessons/:lessonId/video-token", requireAuth, async (req, res) => {
+  const lesson = await prisma.lesson.findUnique({
+    where: { id: req.params.lessonId },
+    include: { module: { include: { course: true } } },
+  });
+  if (!lesson) return res.status(404).json({ error: "Урок не знайдено" });
+
+  const isOwner = lesson.module.course.teacherId === req.user.id || req.user.role === "admin";
+  if (!isOwner) {
+    const enrollment = await prisma.enrollment.findUnique({
+      where: { studentId_courseId: { studentId: req.user.id, courseId: lesson.module.courseId } },
+    });
+    if (!enrollment) return res.status(403).json({ error: "Курс не придбано" });
+  }
+  if (!lesson.videoUrl) return res.status(404).json({ error: "Відео відсутнє" });
+
+  const token = signVideoToken(lesson.id, req.user.id);
+  res.json({ url: `${process.env.API_URL || ""}/api/stream/lesson/${lesson.id}?token=${token}` });
+});
 
 // Student: complete a lesson -> XP + streak + badges (+ certificate at 100%)
 router.post("/lessons/:lessonId/complete", requireAuth, async (req, res) => {

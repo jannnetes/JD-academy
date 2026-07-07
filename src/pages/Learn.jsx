@@ -10,6 +10,7 @@ export default function Learn() {
   const { courseId } = useParams();
   const [data, setData] = useState(null);
   const [activeLesson, setActiveLesson] = useState(null);
+  const [videoUrl, setVideoUrl] = useState(null);
   const [toast, setToast] = useState(null);
   const [hwContent, setHwContent] = useState("");
   const [submittedHw, setSubmittedHw] = useState(new Set());
@@ -25,6 +26,18 @@ export default function Learn() {
   useEffect(() => {
     load();
   }, [courseId]);
+
+  // The real video URL is never sent in bulk — fetch a fresh, short-lived
+  // signed link each time the active lesson changes.
+  useEffect(() => {
+    if (!activeLesson) { setVideoUrl(null); return; }
+    let cancelled = false;
+    setVideoUrl(null);
+    api(`/enrollment/lessons/${activeLesson.id}/video-token`)
+      .then((res) => { if (!cancelled) setVideoUrl(res.url); })
+      .catch(() => { if (!cancelled) setVideoUrl(null); });
+    return () => { cancelled = true; };
+  }, [activeLesson?.id]);
 
   function showToast(payload) {
     setToast(payload);
@@ -120,10 +133,10 @@ export default function Learn() {
           {activeLesson ? (
             <motion.div key={activeLesson.id} initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }}>
               <div className="video-frame">
-                {activeLesson.videoUrl ? (
-                  <video src={activeLesson.videoUrl} controls className="video-el" />
+                {videoUrl ? (
+                  <video key={videoUrl} src={videoUrl} controls className="video-el" />
                 ) : (
-                  <div className="video-placeholder">Lesson video</div>
+                  <div className="video-placeholder">Loading video…</div>
                 )}
               </div>
               <h2>{activeLesson.title}</h2>

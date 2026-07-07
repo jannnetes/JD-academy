@@ -12,6 +12,19 @@ export function signToken(user) {
   });
 }
 
+// Short-lived, per-user, per-lesson token for the video streaming endpoint —
+// keeps the real video URL out of bulk API responses and stops a copied
+// link from working (or being shared) for more than a few minutes.
+export function signVideoToken(lessonId, userId) {
+  return jwt.sign({ lessonId, userId, purpose: "video" }, SECRET, { expiresIn: "15m" });
+}
+
+export function verifyVideoToken(token) {
+  const payload = jwt.verify(token, SECRET);
+  if (payload.purpose !== "video") throw new Error("Wrong token type");
+  return payload;
+}
+
 // Attaches req.user if a valid token is present (does not block).
 export async function attachUser(req, _res, next) {
   try {

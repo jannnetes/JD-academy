@@ -78,9 +78,12 @@ router.get("/:id", async (req, res) => {
       modules: {
         orderBy: { order: "asc" },
         include: {
+          // Public preview endpoint — no videoUrl/content here even for
+          // paying students. The player fetches those per-lesson via a
+          // signed, enrollment-checked token (see /enrollment/lessons/:id).
           lessons: {
             orderBy: { order: "asc" },
-            include: { homework: true },
+            select: { id: true, order: true, title: true, durationMin: true, xpReward: true, homework: true },
           },
         },
       },

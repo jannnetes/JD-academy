@@ -28,6 +28,7 @@ import liveRoutes from "./routes/liveRoutes.js";
 import adminRoutes from "./routes/adminRoutes.js";
 import reviewRoutes from "./routes/reviewRoutes.js";
 import meRoutes from "./routes/meRoutes.js";
+import streamRoutes from "./routes/streamRoutes.js";
 
 const app = express();
 
@@ -54,6 +55,7 @@ app.use("/api/live", liveRoutes);
 app.use("/api/admin", adminRoutes);
 app.use("/api/reviews", reviewRoutes);
 app.use("/api/me", meRoutes);
+app.use("/api/stream", streamRoutes);
 
 // Production: serve the built frontend (dist) as static + SPA fallback
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
