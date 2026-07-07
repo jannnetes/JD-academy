@@ -86,7 +86,7 @@ export default function Home() {
       <div className="ef-marquee">
         <div className="marquee-track">
           {Array(2).fill(0).map((_, i) => (
-            <span key={i} className="ef-marquee-row">LEARN · GROW · EARN · 500+ COURSES · LIVE LESSONS · GET CERTIFIED · </span>
+            <span key={i} className="ef-marquee-row">LEARN · GROW · EARN · {totalCourses ?? "NEW"} COURSES · LIVE LESSONS · GET CERTIFIED · </span>
           ))}
         </div>
       </div>
