@@ -93,6 +93,40 @@ router.patch("/courses/:id/review", async (req, res) => {
   res.json(updated);
 });
 
+router.get("/promo-codes", async (_req, res) => {
+  const codes = await prisma.promoCode.findMany({ orderBy: { createdAt: "desc" } });
+  res.json(codes);
+});
+
+router.post("/promo-codes", async (req, res) => {
+  const { code, percentOff, maxUses, expiresAt } = req.body || {};
+  if (!code || !percentOff || percentOff < 1 || percentOff > 100) {
+    return res.status(400).json({ error: "Потрібен код і знижка від 1 до 100%" });
+  }
+  try {
+    const created = await prisma.promoCode.create({
+      data: {
+        code: code.trim().toUpperCase(),
+        percentOff: Number(percentOff),
+        maxUses: maxUses ? Number(maxUses) : null,
+        expiresAt: expiresAt ? new Date(expiresAt) : null,
+      },
+    });
+    res.json(created);
+  } catch {
+    res.status(409).json({ error: "Такий код вже існує" });
+  }
+});
+
+router.patch("/promo-codes/:id", async (req, res) => {
+  const { active } = req.body || {};
+  const updated = await prisma.promoCode.update({
+    where: { id: req.params.id },
+    data: { ...(active !== undefined && { active }) },
+  });
+  res.json(updated);
+});
+
 router.get("/fees", async (_req, res) => {
   const fees = await prisma.platformFeeConfig.findMany();
   res.json(fees);

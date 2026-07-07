@@ -13,6 +13,7 @@ export default function CourseDetail() {
   const [buying, setBuying] = useState(false);
   const [message, setMessage] = useState("");
   const [owned, setOwned] = useState(false);
+  const [promoCode, setPromoCode] = useState("");
 
   useEffect(() => {
     api(`/courses/${id}`).then(setCourse).catch(() => {});
@@ -65,7 +66,7 @@ export default function CourseDetail() {
     setBuying(true);
     setMessage("");
     try {
-      const res = await api(`/enrollment/checkout/${id}`, { method: "POST" });
+      const res = await api(`/enrollment/checkout/${id}`, { method: "POST", body: { promoCode: promoCode || undefined } });
       if (res.free) {
         setOwned(true);
         setMessage("✓ Course added to your dashboard.");
@@ -179,6 +180,15 @@ export default function CourseDetail() {
             <div><span>Service fee ({b.percent}%)</span><span>+${b.platformFee}</span></div>
             <div className="total"><span>Total</span><span>${b.total}</span></div>
           </div>
+
+          {!owned && (
+            <input
+              className="promo-input"
+              placeholder="Promo code (optional)"
+              value={promoCode}
+              onChange={(e) => setPromoCode(e.target.value.toUpperCase())}
+            />
+          )}
 
           {owned ? (
             <Link to="/dashboard" className="primary-btn full">Go to learning</Link>

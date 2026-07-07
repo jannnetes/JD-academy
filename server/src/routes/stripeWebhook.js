@@ -17,10 +17,17 @@ export async function stripeWebhookHandler(req, res) {
 
   if (event.type === "checkout.session.completed") {
     const session = event.data.object;
-    const { type, courseId, studentId, liveSessionId } = session.metadata || {};
+    const { type, courseId, studentId, liveSessionId, promoCode, basePrice, platformFee, total } = session.metadata || {};
     try {
       if (type === "course" && courseId && studentId) {
-        await grantCourseEnrollment(courseId, studentId);
+        // Reconstruct the exact breakdown charged at checkout time (rather
+        // than recomputing from the current fee %, which may have changed
+        // since the session was created).
+        const breakdown = {
+          basePrice: Number(basePrice), platformFee: Number(platformFee),
+          teacherPayout: Number(basePrice), total: Number(total),
+        };
+        await grantCourseEnrollment(courseId, studentId, { breakdown, promoCode: promoCode || undefined });
       } else if (type === "live" && liveSessionId && studentId) {
         await grantLiveBooking(liveSessionId, studentId);
       }

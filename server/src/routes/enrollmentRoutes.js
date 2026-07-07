@@ -1,7 +1,7 @@
 import { Router } from "express";
 import { prisma } from "../prisma.js";
 import { requireAuth } from "../auth.js";
-import { computeBreakdown } from "../fees.js";
+import { computeBreakdown, applyPromoCode } from "../fees.js";
 import { awardXp, checkBadges } from "../gamification.js";
 import { stripe } from "../stripe.js";
 import { grantCourseEnrollment } from "../fulfillment.js";
@@ -20,10 +20,20 @@ router.post("/checkout/:courseId", requireAuth, async (req, res) => {
   });
   if (existing) return res.status(409).json({ error: "Курс вже придбано" });
 
-  const b = await computeBreakdown(course.basePrice, "course");
+  const { promoCode } = req.body || {};
+  let b, promo;
+  if (promoCode) {
+    try {
+      ({ breakdown: b, promo } = await applyPromoCode(promoCode, course.basePrice, "course"));
+    } catch (err) {
+      return res.status(400).json({ error: err.message });
+    }
+  } else {
+    b = await computeBreakdown(course.basePrice, "course");
+  }
 
   if (b.total <= 0) {
-    const enrollment = await grantCourseEnrollment(course.id, req.user.id);
+    const enrollment = await grantCourseEnrollment(course.id, req.user.id, { breakdown: b, promoCode: promo?.code });
     return res.json({ free: true, enrollment });
   }
 
@@ -46,7 +56,10 @@ router.post("/checkout/:courseId", requireAuth, async (req, res) => {
         quantity: 1,
       },
     ],
-    metadata: { type: "course", courseId: course.id, studentId: req.user.id },
+    metadata: {
+      type: "course", courseId: course.id, studentId: req.user.id, promoCode: promo?.code || "",
+      basePrice: String(b.basePrice), platformFee: String(b.platformFee), total: String(b.total),
+    },
     success_url: `${clientUrl}/course/${course.id}?purchase=success`,
     cancel_url: `${clientUrl}/course/${course.id}?purchase=cancelled`,
   });

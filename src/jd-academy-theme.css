@@ -236,3 +236,18 @@ html, body, #root, main, .container {
   .cookie-actions button { flex: 1; }
 }
 
+.promo-input {
+  width: 100%;
+  box-sizing: border-box;
+  border: 1.5px solid rgba(13, 13, 13, 0.25);
+  border-radius: var(--radius-pill);
+  padding: 12px 20px;
+  font-family: var(--font-mono);
+  font-size: 13px;
+  text-transform: uppercase;
+  background: transparent;
+  color: var(--ink);
+  margin-bottom: 12px;
+}
+.promo-input:focus { border-color: var(--coral); outline: none; }
+

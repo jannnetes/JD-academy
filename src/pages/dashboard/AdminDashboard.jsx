@@ -8,6 +8,7 @@ const tabs = [
   { id: "users", label: "Users" },
   { id: "orders", label: "Finances" },
   { id: "fees", label: "Fees" },
+  { id: "promo", label: "Promo Codes" },
 ];
 
 export default function AdminDashboard() {
@@ -17,6 +18,9 @@ export default function AdminDashboard() {
   const [orders, setOrders] = useState([]);
   const [fees, setFees] = useState([]);
   const [pending, setPending] = useState([]);
+  const [promoCodes, setPromoCodes] = useState([]);
+  const [promoForm, setPromoForm] = useState({ code: "", percentOff: 10, maxUses: "", expiresAt: "" });
+  const [promoMsg, setPromoMsg] = useState("");
 
   function reload() {
     api("/admin/stats").then(setStats).catch(() => {});
@@ -24,6 +28,7 @@ export default function AdminDashboard() {
     api("/admin/orders").then(setOrders).catch(() => {});
     api("/admin/fees").then(setFees).catch(() => {});
     api("/admin/courses/pending").then(setPending).catch(() => {});
+    api("/admin/promo-codes").then(setPromoCodes).catch(() => {});
   }
   useEffect(reload, []);
 
@@ -43,6 +48,29 @@ export default function AdminDashboard() {
     const reason = prompt("Why is this course being rejected? (visible to the teacher)");
     if (reason === null) return;
     await api(`/admin/courses/${c.id}/review`, { method: "PATCH", body: { approve: false, reason } });
+    reload();
+  }
+  async function createPromo(e) {
+    e.preventDefault();
+    setPromoMsg("");
+    try {
+      await api("/admin/promo-codes", {
+        method: "POST",
+        body: {
+          code: promoForm.code,
+          percentOff: Number(promoForm.percentOff),
+          maxUses: promoForm.maxUses || undefined,
+          expiresAt: promoForm.expiresAt || undefined,
+        },
+      });
+      setPromoForm({ code: "", percentOff: 10, maxUses: "", expiresAt: "" });
+      reload();
+    } catch (err) {
+      setPromoMsg(err.message);
+    }
+  }
+  async function togglePromo(p) {
+    await api(`/admin/promo-codes/${p.id}`, { method: "PATCH", body: { active: !p.active } });
     reload();
   }
 
@@ -124,6 +152,46 @@ export default function AdminDashboard() {
             </div>
           ))}
         </section>
+      )}
+
+      {active === "promo" && (
+        <>
+          <section className="form-card glass">
+            <h2>New promo code</h2>
+            <form onSubmit={createPromo} className="auth-form">
+              <label className="au-field">
+                <span className="au-label">Code</span>
+                <input value={promoForm.code} onChange={(e) => setPromoForm({ ...promoForm, code: e.target.value })} placeholder="LAUNCH20" required />
+              </label>
+              <label className="au-field">
+                <span className="au-label">% off</span>
+                <input type="number" min="1" max="100" value={promoForm.percentOff} onChange={(e) => setPromoForm({ ...promoForm, percentOff: e.target.value })} required />
+              </label>
+              <label className="au-field">
+                <span className="au-label">Max uses (blank = unlimited)</span>
+                <input type="number" min="1" value={promoForm.maxUses} onChange={(e) => setPromoForm({ ...promoForm, maxUses: e.target.value })} />
+              </label>
+              <label className="au-field">
+                <span className="au-label">Expires (blank = never)</span>
+                <input type="date" value={promoForm.expiresAt} onChange={(e) => setPromoForm({ ...promoForm, expiresAt: e.target.value })} />
+              </label>
+              {promoMsg && <p className="au-error">! {promoMsg}</p>}
+              <button className="primary-btn full">Create code</button>
+            </form>
+          </section>
+
+          <section className="table-card glass">
+            <div className="table-row table-head wide"><span>Code</span><span>Discount / uses</span><span>Status</span></div>
+            {promoCodes.map((p) => (
+              <div key={p.id} className="table-row wide">
+                <strong>{p.code}</strong>
+                <span className="muted small">{p.percentOff}% off · {p.usedCount}{p.maxUses ? `/${p.maxUses}` : ""} used{p.expiresAt ? ` · expires ${new Date(p.expiresAt).toLocaleDateString()}` : ""}</span>
+                <button className="secondary-btn" onClick={() => togglePromo(p)}>{p.active ? "Deactivate" : "Activate"}</button>
+              </div>
+            ))}
+            {promoCodes.length === 0 && <div className="table-empty"><p>No promo codes yet.</p></div>}
+          </section>
+        </>
       )}
     </DashShell>
   );

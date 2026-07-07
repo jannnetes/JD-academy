@@ -3,7 +3,9 @@ import { computeBreakdown } from "./fees.js";
 
 // Called only after a Stripe payment is confirmed (webhook) — or directly
 // for zero-cost courses. Idempotent: safe to call twice for the same pair.
-export async function grantCourseEnrollment(courseId, studentId) {
+// `breakdown` lets the caller pass a promo-discounted price (falls back to
+// the course's full base price if omitted, e.g. for older/plain callers).
+export async function grantCourseEnrollment(courseId, studentId, { breakdown, promoCode } = {}) {
   const existing = await prisma.enrollment.findUnique({
     where: { studentId_courseId: { studentId, courseId } },
   });
@@ -11,9 +13,9 @@ export async function grantCourseEnrollment(courseId, studentId) {
 
   const course = await prisma.course.findUnique({ where: { id: courseId } });
   if (!course) throw new Error(`Course ${courseId} not found`);
-  const b = await computeBreakdown(course.basePrice, "course");
+  const b = breakdown || (await computeBreakdown(course.basePrice, "course"));
 
-  const [, enrollment] = await prisma.$transaction([
+  const ops = [
     prisma.order.create({
       data: {
         buyerId: studentId,
@@ -23,10 +25,16 @@ export async function grantCourseEnrollment(courseId, studentId) {
         platformFee: b.platformFee,
         teacherPayout: b.teacherPayout,
         status: "paid",
+        promoCode: promoCode || null,
       },
     }),
     prisma.enrollment.create({ data: { studentId, courseId } }),
-  ]);
+  ];
+  if (promoCode) {
+    ops.push(prisma.promoCode.update({ where: { code: promoCode }, data: { usedCount: { increment: 1 } } }));
+  }
+
+  const [, enrollment] = await prisma.$transaction(ops);
   return enrollment;
 }
 
