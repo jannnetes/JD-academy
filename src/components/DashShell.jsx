@@ -1,5 +1,6 @@
 import { motion } from "framer-motion";
 import Sidebar from "./Sidebar.jsx";
+import NotificationBell from "./NotificationBell.jsx";
 import { useAuth } from "../auth/AuthContext.jsx";
 
 // Typographic header per role: [filled line] + [outline line] + accent name.
@@ -29,7 +30,10 @@ export default function DashShell({ tabs, active, onTab, children }) {
               <span className="outline">{l2}</span>
               <i className="accent">, {user?.name?.split(" ")[0]}</i>
             </h1>
-            <span className="dash-date">{today}</span>
+            <div className="dash-head-actions">
+              <NotificationBell />
+              <span className="dash-date">{today}</span>
+            </div>
           </div>
           <div className="dash-rule" />
         </div>

@@ -1,6 +1,7 @@
 import { Router } from "express";
 import { prisma } from "../prisma.js";
 import { requireAuth } from "../auth.js";
+import { notify } from "../notifications.js";
 
 const router = Router();
 
@@ -27,6 +28,17 @@ router.post("/:courseId", requireAuth, async (req, res) => {
       status: "published",
     },
   });
+
+  const course = await prisma.course.findUnique({ where: { id: req.params.courseId } });
+  if (course) {
+    await notify(course.teacherId, {
+      type: "new_review",
+      title: `New ${review.rating}★ review`,
+      body: `Someone reviewed "${course.title}": "${review.text.slice(0, 80)}"`,
+      link: `/course/${course.id}`,
+    });
+  }
+
   res.json(review);
 });
 

@@ -275,3 +275,79 @@ html, body, #root, main, .container {
 }
 .wishlist-btn:hover { transform: scale(1.08); background: rgba(247, 59, 32, 0.08); }
 
+/* ---------- notification bell ---------- */
+.dash-head-actions { display: flex; align-items: center; gap: 16px; }
+.notif-bell { position: relative; }
+.notif-bell-btn {
+  position: relative;
+  background: transparent;
+  border: 1.5px solid var(--ink, #0d0d0d);
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  font-size: 16px;
+  cursor: pointer;
+  display: grid;
+  place-items: center;
+}
+.notif-badge {
+  position: absolute;
+  top: -4px;
+  right: -4px;
+  background: var(--coral, #f73b20);
+  color: #fff;
+  font-family: var(--font-mono, monospace);
+  font-size: 10px;
+  font-weight: 700;
+  border-radius: 999px;
+  min-width: 18px;
+  height: 18px;
+  display: grid;
+  place-items: center;
+  padding: 0 4px;
+}
+.notif-menu {
+  position: absolute;
+  top: calc(100% + 12px);
+  right: 0;
+  width: 320px;
+  max-height: 420px;
+  overflow-y: auto;
+  background: var(--paper, #f7f4ee);
+  border: 1.5px solid var(--ink, #0d0d0d);
+  border-radius: var(--radius-card, 16px);
+  box-shadow: 0 20px 50px -20px rgba(13, 13, 13, 0.3);
+  z-index: 500;
+}
+.notif-menu-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 14px 16px;
+  border-bottom: 1px solid rgba(13, 13, 13, 0.1);
+  font-family: var(--font-body, sans-serif);
+  font-weight: 700;
+  font-size: 13px;
+}
+.notif-menu-head button {
+  background: none;
+  border: none;
+  color: var(--coral, #f73b20);
+  font-size: 12px;
+  cursor: pointer;
+  font-family: var(--font-mono, monospace);
+}
+.notif-empty { padding: 20px 16px; font-size: 13px; opacity: 0.5; }
+.notif-item {
+  display: block;
+  padding: 12px 16px;
+  border-bottom: 1px solid rgba(13, 13, 13, 0.06);
+  text-decoration: none;
+  color: var(--ink, #0d0d0d);
+}
+.notif-item:hover { background: rgba(13, 13, 13, 0.03); }
+.notif-item.unread { background: rgba(247, 59, 32, 0.05); }
+.notif-item strong { display: block; font-size: 13px; margin-bottom: 2px; }
+.notif-item p { margin: 0 0 4px; font-size: 12px; opacity: 0.7; line-height: 1.4; }
+.notif-time { font-family: var(--font-mono, monospace); font-size: 10px; opacity: 0.4; }
+

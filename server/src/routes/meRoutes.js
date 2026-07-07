@@ -44,6 +44,32 @@ router.get("/gamification", requireAuth, async (req, res) => {
   });
 });
 
+router.get("/notifications", requireAuth, async (req, res) => {
+  const notifications = await prisma.notification.findMany({
+    where: { userId: req.user.id },
+    orderBy: { createdAt: "desc" },
+    take: 30,
+  });
+  const unreadCount = await prisma.notification.count({ where: { userId: req.user.id, read: false } });
+  res.json({ notifications, unreadCount });
+});
+
+router.patch("/notifications/:id/read", requireAuth, async (req, res) => {
+  await prisma.notification.updateMany({
+    where: { id: req.params.id, userId: req.user.id },
+    data: { read: true },
+  });
+  res.json({ ok: true });
+});
+
+router.patch("/notifications/read-all", requireAuth, async (req, res) => {
+  await prisma.notification.updateMany({
+    where: { userId: req.user.id, read: false },
+    data: { read: true },
+  });
+  res.json({ ok: true });
+});
+
 // Public leaderboard (top by XP)
 router.get("/leaderboard", async (_req, res) => {
   const top = await prisma.user.findMany({

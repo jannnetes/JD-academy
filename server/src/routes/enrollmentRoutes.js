@@ -5,6 +5,7 @@ import { computeBreakdown, applyPromoCode } from "../fees.js";
 import { awardXp, checkBadges } from "../gamification.js";
 import { stripe } from "../stripe.js";
 import { grantCourseEnrollment } from "../fulfillment.js";
+import { notify } from "../notifications.js";
 
 const router = Router();
 
@@ -142,6 +143,13 @@ async function recomputeProgress(enrollment, userId) {
         serial: `JDL-${Date.now().toString(36).toUpperCase()}-${Math.random().toString(36).slice(2, 6).toUpperCase()}`,
       },
       update: {},
+    });
+    const course = await prisma.course.findUnique({ where: { id: enrollment.courseId } });
+    await notify(userId, {
+      type: "certificate_earned",
+      title: "Certificate earned 🎓",
+      body: `You completed "${course?.title}" — your certificate is ready.`,
+      link: `/learn/${enrollment.courseId}`,
     });
   }
   await prisma.enrollment.update({ where: { id: enrollment.id }, data });
