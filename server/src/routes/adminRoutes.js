@@ -1,6 +1,7 @@
 import { Router } from "express";
 import { prisma } from "../prisma.js";
 import { requireAuth, requireRole } from "../auth.js";
+import { notify } from "../notifications.js";
 
 const router = Router();
 
@@ -60,6 +61,36 @@ router.get("/stats", async (_req, res) => {
     platformRevenue,
     gmv,
   });
+});
+
+// Courses awaiting review (teacher clicked "Submit for review")
+router.get("/courses/pending", async (_req, res) => {
+  const courses = await prisma.course.findMany({
+    where: { status: "pending" },
+    include: { teacher: { select: { name: true, email: true } }, _count: { select: { modules: true } } },
+    orderBy: { createdAt: "asc" },
+  });
+  res.json(courses);
+});
+
+// Approve or reject a pending course.
+router.patch("/courses/:id/review", async (req, res) => {
+  const { approve, reason } = req.body || {};
+  const course = await prisma.course.findUnique({ where: { id: req.params.id } });
+  if (!course) return res.status(404).json({ error: "Курс не знайдено" });
+
+  const updated = await prisma.course.update({
+    where: { id: req.params.id },
+    data: approve
+      ? { status: "published", rejectionReason: null }
+      : { status: "draft", rejectionReason: reason || "No reason given" },
+  });
+
+  await notify(course.teacherId, approve
+    ? { type: "course_approved", title: "Course approved ✓", body: `"${course.title}" is now live in the catalog.`, link: `/course/${course.id}` }
+    : { type: "course_rejected", title: "Course needs changes", body: `"${course.title}" wasn't approved: ${reason || "no reason given"}`, link: `/builder/${course.id}` });
+
+  res.json(updated);
 });
 
 router.get("/fees", async (_req, res) => {

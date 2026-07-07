@@ -4,6 +4,7 @@ import { api } from "../../api";
 
 const tabs = [
   { id: "overview", label: "Overview" },
+  { id: "review", label: "Course Review" },
   { id: "users", label: "Users" },
   { id: "orders", label: "Finances" },
   { id: "fees", label: "Fees" },
@@ -15,12 +16,14 @@ export default function AdminDashboard() {
   const [users, setUsers] = useState([]);
   const [orders, setOrders] = useState([]);
   const [fees, setFees] = useState([]);
+  const [pending, setPending] = useState([]);
 
   function reload() {
     api("/admin/stats").then(setStats).catch(() => {});
     api("/admin/users").then(setUsers).catch(() => {});
     api("/admin/orders").then(setOrders).catch(() => {});
     api("/admin/fees").then(setFees).catch(() => {});
+    api("/admin/courses/pending").then(setPending).catch(() => {});
   }
   useEffect(reload, []);
 
@@ -32,6 +35,16 @@ export default function AdminDashboard() {
     await api(`/admin/fees/${type}`, { method: "PUT", body: { percent: Number(percent) } });
     reload();
   }
+  async function approveCourse(c) {
+    await api(`/admin/courses/${c.id}/review`, { method: "PATCH", body: { approve: true } });
+    reload();
+  }
+  async function rejectCourse(c) {
+    const reason = prompt("Why is this course being rejected? (visible to the teacher)");
+    if (reason === null) return;
+    await api(`/admin/courses/${c.id}/review`, { method: "PATCH", body: { approve: false, reason } });
+    reload();
+  }
 
   return (
     <DashShell tabs={tabs} active={active} onTab={setActive}>
@@ -41,6 +54,26 @@ export default function AdminDashboard() {
           <div className="stat-card glass"><span className="stat-num">{stats.courses}</span><span className="muted">Courses</span></div>
           <div className="stat-card glass accent"><span className="stat-num">${stats.platformRevenue}</span><span className="muted">Platform Revenue</span></div>
           <div className="stat-card glass"><span className="stat-num">${stats.gmv}</span><span className="muted">GMV</span></div>
+        </section>
+      )}
+
+      {active === "review" && (
+        <section className="table-card glass">
+          {pending.length === 0 && <div className="table-empty"><p>No courses waiting for review.</p></div>}
+          {pending.map((c) => (
+            <div key={c.id} className="table-row wide" style={{ alignItems: "center" }}>
+              <div>
+                <strong>{c.title}</strong>
+                <p className="muted small">{c.industry} · {c._count.modules} modules · ${c.basePrice}</p>
+              </div>
+              <span className="muted small">{c.teacher.name} · {c.teacher.email}</span>
+              <div style={{ display: "flex", gap: 10 }}>
+                <a href={`/course/${c.id}`} target="_blank" rel="noreferrer" className="secondary-btn">Preview</a>
+                <button className="primary-btn" onClick={() => approveCourse(c)}>Approve</button>
+                <button className="secondary-btn" onClick={() => rejectCourse(c)}>Reject</button>
+              </div>
+            </div>
+          ))}
         </section>
       )}
 

@@ -46,6 +46,8 @@ model User {
   submissions  HomeworkSubmission[]
   badges       UserBadge[]
   certificates Certificate[]
+  wishlist     Wishlist[]
+  notifications Notification[]
 }
 
 model Course {
@@ -58,7 +60,8 @@ model Course {
   topics      String
   basePrice   Int
   cover       String?
-  status      String   @default("draft") // draft | published | archived
+  status      String   @default("draft") // draft | pending | published | archived
+  rejectionReason String?
   level       String   @default("Початковий") // Початковий | Середній | Просунутий
   createdAt   DateTime @default(now())
 
@@ -68,6 +71,7 @@ model Course {
   reviews      Review[]
   liveSessions LiveSession[]
   certificates Certificate[]
+  wishlist     Wishlist[]
 }
 
 model Module {
@@ -141,6 +145,7 @@ model Order {
   platformFee   Int
   teacherPayout Int
   status        String   @default("paid")
+  promoCode     String?
   createdAt     DateTime @default(now())
 }
 
@@ -258,4 +263,38 @@ model PlatformFeeConfig {
   type      String   @unique
   percent   Int
   updatedAt DateTime @updatedAt
+}
+
+model PromoCode {
+  id            String    @id @default(cuid())
+  code          String    @unique
+  percentOff    Int       // 1-100
+  maxUses       Int?      // null = unlimited
+  usedCount     Int       @default(0)
+  expiresAt     DateTime?
+  active        Boolean   @default(true)
+  createdAt     DateTime  @default(now())
+}
+
+model Wishlist {
+  id        String   @id @default(cuid())
+  studentId String
+  student   User     @relation(fields: [studentId], references: [id])
+  courseId  String
+  course    Course   @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+
+  @@unique([studentId, courseId])
+}
+
+model Notification {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  type      String   // course_approved | course_rejected | homework_graded | ...
+  title     String
+  body      String
+  link      String?
+  read      Boolean  @default(false)
+  createdAt DateTime @default(now())
 }

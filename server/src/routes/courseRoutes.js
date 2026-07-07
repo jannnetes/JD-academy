@@ -145,10 +145,20 @@ async function assertOwner(req, res) {
   return course;
 }
 
+// Teachers can only move their course between draft <-> pending (submit for
+// review / withdraw). Only an admin can actually publish or unpublish —
+// see /api/admin/courses/:id/review below.
+const TEACHER_ALLOWED_STATUSES = ["draft", "pending"];
+
 router.patch("/:id", requireAuth, requireRole("teacher", "admin"), async (req, res) => {
   const course = await assertOwner(req, res);
   if (!course) return;
   const { title, description, industry, topics, basePrice, cover, status, level } = req.body || {};
+
+  if (status !== undefined && req.user.role !== "admin" && !TEACHER_ALLOWED_STATUSES.includes(status)) {
+    return res.status(403).json({ error: "Тільки адміністратор може публікувати курси" });
+  }
+
   const updated = await prisma.course.update({
     where: { id: req.params.id },
     data: {
@@ -158,7 +168,7 @@ router.patch("/:id", requireAuth, requireRole("teacher", "admin"), async (req, r
       ...(topics !== undefined && { topics: Array.isArray(topics) ? topics.join(",") : topics }),
       ...(basePrice !== undefined && { basePrice: Number(basePrice) }),
       ...(cover !== undefined && { cover }),
-      ...(status !== undefined && { status }),
+      ...(status !== undefined && { status, ...(status === "pending" && { rejectionReason: null }) }),
       ...(level !== undefined && { level }),
     },
   });

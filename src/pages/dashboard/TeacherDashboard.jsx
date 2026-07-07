@@ -49,8 +49,8 @@ export default function TeacherDashboard() {
     }
   }
 
-  async function togglePublish(c) {
-    await api(`/courses/${c.id}`, { method: "PATCH", body: { status: c.status === "published" ? "draft" : "published" } });
+  async function setCourseStatus(c, status) {
+    await api(`/courses/${c.id}`, { method: "PATCH", body: { status } });
     reload();
   }
   async function addModule(courseId) {
@@ -120,15 +120,26 @@ export default function TeacherDashboard() {
                   <span className={c.status === "published" ? "badge ok" : "badge"}>{c.status}</span>
                   <h3>{c.title}</h3>
                   <p className="muted small">{c.students} students · {c.modules.length} modules · {c.lessonCount} lessons · ${c.basePrice}</p>
+                  {c.status === "draft" && c.rejectionReason && (
+                    <p className="small" style={{ color: "#F73B20" }}>Not approved: {c.rejectionReason}</p>
+                  )}
                 </div>
                 <div className="builder-actions">
                   <Link to={`/builder/${c.id}`} className="secondary-btn">Open builder →</Link>
                   <button className="secondary-btn" onClick={() => setExpanded(expanded === c.id ? null : c.id)}>
                     {expanded === c.id ? "Collapse" : "Quick edit"}
                   </button>
-                  <button className="primary-btn" onClick={() => togglePublish(c)}>
-                    {c.status === "published" ? "Unpublish" : "Publish"}
-                  </button>
+                  {c.status === "published" && (
+                    <button className="primary-btn" onClick={() => setCourseStatus(c, "draft")}>Unpublish</button>
+                  )}
+                  {c.status === "draft" && (
+                    <button className="primary-btn" onClick={() => setCourseStatus(c, "pending")}>
+                      {c.rejectionReason ? "Resubmit for review" : "Submit for review"}
+                    </button>
+                  )}
+                  {c.status === "pending" && (
+                    <span className="badge">⏳ Awaiting admin review</span>
+                  )}
                 </div>
               </header>
 
