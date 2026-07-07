@@ -246,6 +246,28 @@ router.get("/orders", requireAuth, async (req, res) => {
   res.json(orders);
 });
 
+// ---- Certificates ----
+router.get("/certificates", requireAuth, async (req, res) => {
+  const certs = await prisma.certificate.findMany({
+    where: { userId: req.user.id },
+    include: { course: { select: { title: true, teacher: { select: { name: true } } } } },
+    orderBy: { issuedAt: "desc" },
+  });
+  res.json(certs);
+});
+
+router.get("/certificates/:id", requireAuth, async (req, res) => {
+  const cert = await prisma.certificate.findUnique({
+    where: { id: req.params.id },
+    include: {
+      course: { select: { title: true, teacher: { select: { name: true } } } },
+      user: { select: { name: true } },
+    },
+  });
+  if (!cert || cert.userId !== req.user.id) return res.status(404).json({ error: "Сертифікат не знайдено" });
+  res.json(cert);
+});
+
 // ---- Wishlist ----
 router.get("/wishlist", requireAuth, async (req, res) => {
   const items = await prisma.wishlist.findMany({

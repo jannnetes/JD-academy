@@ -24,6 +24,7 @@ const Live = lazy(() => import("./pages/Live.jsx"));
 const Learn = lazy(() => import("./pages/Learn.jsx"));
 const Builder = lazy(() => import("./pages/Builder.jsx"));
 const Dashboard = lazy(() => import("./pages/Dashboard.jsx"));
+const Certificate = lazy(() => import("./pages/Certificate.jsx"));
 
 export default function App() {
   const location = useLocation();
@@ -86,6 +87,14 @@ export default function App() {
                 element={
                   <ProtectedRoute roles={["teacher", "admin"]}>
                     <Builder />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/certificate/:certificateId"
+                element={
+                  <ProtectedRoute>
+                    <Certificate />
                   </ProtectedRoute>
                 }
               />

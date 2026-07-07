@@ -9,6 +9,7 @@ const tabs = [
   { id: "courses", label: "My Learning" },
   { id: "wishlist", label: "Wishlist" },
   { id: "achievements", label: "Achievements" },
+  { id: "certificates", label: "Certificates" },
   { id: "live", label: "Live Lessons" },
   { id: "support", label: "Help & Support" },
   { id: "orders", label: "Payments" },
@@ -22,6 +23,7 @@ export default function StudentDashboard() {
   const [gami, setGami] = useState(null);
   const [leaderboard, setLeaderboard] = useState([]);
   const [wishlist, setWishlist] = useState([]);
+  const [certificates, setCertificates] = useState([]);
 
   function reloadWishlist() {
     api("/enrollment/wishlist").then(setWishlist).catch(() => {});
@@ -32,6 +34,7 @@ export default function StudentDashboard() {
     api("/enrollment/orders").then(setOrders).catch(() => {});
     api("/me/gamification").then(setGami).catch(() => {});
     api("/me/leaderboard").then(setLeaderboard).catch(() => {});
+    api("/enrollment/certificates").then(setCertificates).catch(() => {});
     reloadWishlist();
   }, []);
 
@@ -42,7 +45,7 @@ export default function StudentDashboard() {
 
   return (
     <DashShell tabs={tabs} active={active} onTab={setActive}>
-      <GamificationBar data={gami} />
+      <GamificationBar data={gami} onCertificatesClick={() => setActive("certificates")} />
 
       {active === "courses" && (
         <section className="dash-grid">
@@ -112,6 +115,26 @@ export default function StudentDashboard() {
             ))}
           </section>
         </>
+      )}
+
+      {active === "certificates" && (
+        <section className="dash-grid">
+          {certificates.length === 0 && (
+            <div className="empty-card glass">
+              <p>No certificates yet — finish a course 100% to earn one.</p>
+              <Link to="/dashboard" className="primary-btn">Continue learning</Link>
+            </div>
+          )}
+          {certificates.map((c) => (
+            <article key={c.id} className="dash-card glass cert-list-card">
+              <span className="cert-seal">🎓</span>
+              <h3>{c.course.title}</h3>
+              <p className="muted small">Teacher: {c.course.teacher.name}</p>
+              <p className="muted small">Issued {new Date(c.issuedAt).toLocaleDateString("en-US")}</p>
+              <Link to={`/certificate/${c.id}`} className="primary-btn full">View & Download</Link>
+            </article>
+          ))}
+        </section>
       )}
 
       {active === "live" && (

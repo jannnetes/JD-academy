@@ -181,7 +181,9 @@ export default function Learn() {
                   <span className="cert-seal">🎓</span>
                   <h3>Certificate of Completion</h3>
                   <p>Issued for <strong>{course.title}</strong></p>
-                  <p className="muted small">Serial number: {data.certificate.serial}</p>
+                  <Link to={`/certificate/${data.certificate.id}`} className="primary-btn">
+                    View & download certificate
+                  </Link>
                 </div>
               )}
             </motion.div>

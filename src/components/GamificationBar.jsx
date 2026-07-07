@@ -1,6 +1,6 @@
 import { motion } from "framer-motion";
 
-export default function GamificationBar({ data }) {
+export default function GamificationBar({ data, onCertificatesClick }) {
   if (!data) return null;
   return (
     <section className="gami-bar glass">
@@ -40,13 +40,18 @@ export default function GamificationBar({ data }) {
             <span className="muted small">badges</span>
           </div>
         </div>
-        <div className="gami-pill">
+        <button
+          type="button"
+          className="gami-pill gami-pill-btn"
+          onClick={onCertificatesClick}
+          disabled={!onCertificatesClick}
+        >
           <span className="gami-emoji">🎓</span>
           <div>
             <strong>{data.certificates?.length || 0}</strong>
             <span className="muted small">certificates</span>
           </div>
-        </div>
+        </button>
       </div>
     </section>
   );
