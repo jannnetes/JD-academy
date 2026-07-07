@@ -7,6 +7,7 @@ import { api } from "../../api";
 
 const tabs = [
   { id: "courses", label: "My Learning" },
+  { id: "wishlist", label: "Wishlist" },
   { id: "achievements", label: "Achievements" },
   { id: "live", label: "Live Lessons" },
   { id: "support", label: "Help & Support" },
@@ -20,14 +21,24 @@ export default function StudentDashboard() {
   const [orders, setOrders] = useState([]);
   const [gami, setGami] = useState(null);
   const [leaderboard, setLeaderboard] = useState([]);
+  const [wishlist, setWishlist] = useState([]);
 
+  function reloadWishlist() {
+    api("/enrollment/wishlist").then(setWishlist).catch(() => {});
+  }
   useEffect(() => {
     api("/enrollment/my-courses").then(setEnrollments).catch(() => {});
     api("/live/my-bookings").then(setBookings).catch(() => {});
     api("/enrollment/orders").then(setOrders).catch(() => {});
     api("/me/gamification").then(setGami).catch(() => {});
     api("/me/leaderboard").then(setLeaderboard).catch(() => {});
+    reloadWishlist();
   }, []);
+
+  async function removeFromWishlist(courseId) {
+    await api(`/enrollment/wishlist/${courseId}`, { method: "DELETE" });
+    reloadWishlist();
+  }
 
   return (
     <DashShell tabs={tabs} active={active} onTab={setActive}>
@@ -53,6 +64,26 @@ export default function StudentDashboard() {
               <Link to={`/learn/${e.courseId}`} className="primary-btn full">
                 {e.progressPct > 0 ? "Continue learning" : "Start course"}
               </Link>
+            </article>
+          ))}
+        </section>
+      )}
+
+      {active === "wishlist" && (
+        <section className="dash-grid">
+          {wishlist.length === 0 && (
+            <div className="empty-card glass">
+              <p>Nothing saved yet.</p>
+              <Link to="/catalog" className="primary-btn">Browse catalog</Link>
+            </div>
+          )}
+          {wishlist.map((w) => (
+            <article key={w.id} className="dash-card glass">
+              <div className="dash-card-cover" style={{ background: w.course.cover }} />
+              <h3>{w.course.title}</h3>
+              <p className="muted small">Teacher: {w.course.teacher.name} · {w.course.students} students</p>
+              <Link to={`/course/${w.courseId}`} className="primary-btn full">View course</Link>
+              <button className="secondary-btn full" onClick={() => removeFromWishlist(w.courseId)}>Remove</button>
             </article>
           ))}
         </section>

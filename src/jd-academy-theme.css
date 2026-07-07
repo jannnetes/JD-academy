@@ -251,3 +251,27 @@ html, body, #root, main, .container {
 }
 .promo-input:focus { border-color: var(--coral); outline: none; }
 
+.price-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 18px;
+}
+.wishlist-btn {
+  background: none;
+  border: 1.5px solid var(--ink);
+  border-radius: 50%;
+  width: 44px;
+  height: 44px;
+  flex-shrink: 0;
+  font-size: 20px;
+  line-height: 1;
+  color: var(--coral);
+  cursor: pointer;
+  display: grid;
+  place-items: center;
+  transition: transform 0.15s ease, background 0.2s ease;
+}
+.wishlist-btn:hover { transform: scale(1.08); background: rgba(247, 59, 32, 0.08); }
+

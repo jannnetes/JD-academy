@@ -213,4 +213,34 @@ router.get("/orders", requireAuth, async (req, res) => {
   res.json(orders);
 });
 
+// ---- Wishlist ----
+router.get("/wishlist", requireAuth, async (req, res) => {
+  const items = await prisma.wishlist.findMany({
+    where: { studentId: req.user.id },
+    include: {
+      course: {
+        include: { teacher: { select: { name: true } }, _count: { select: { enrollments: true } } },
+      },
+    },
+    orderBy: { createdAt: "desc" },
+  });
+  res.json(items.map((w) => ({ ...w, course: { ...w.course, students: w.course._count.enrollments } })));
+});
+
+router.post("/wishlist/:courseId", requireAuth, async (req, res) => {
+  const course = await prisma.course.findUnique({ where: { id: req.params.courseId } });
+  if (!course) return res.status(404).json({ error: "Курс не знайдено" });
+  const item = await prisma.wishlist.upsert({
+    where: { studentId_courseId: { studentId: req.user.id, courseId: course.id } },
+    create: { studentId: req.user.id, courseId: course.id },
+    update: {},
+  });
+  res.json(item);
+});
+
+router.delete("/wishlist/:courseId", requireAuth, async (req, res) => {
+  await prisma.wishlist.deleteMany({ where: { studentId: req.user.id, courseId: req.params.courseId } });
+  res.json({ ok: true });
+});
+
 export default router;

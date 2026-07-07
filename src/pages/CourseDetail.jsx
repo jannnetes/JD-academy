@@ -14,10 +14,32 @@ export default function CourseDetail() {
   const [message, setMessage] = useState("");
   const [owned, setOwned] = useState(false);
   const [promoCode, setPromoCode] = useState("");
+  const [wishlisted, setWishlisted] = useState(false);
+  const [wishlistBusy, setWishlistBusy] = useState(false);
 
   useEffect(() => {
     api(`/courses/${id}`).then(setCourse).catch(() => {});
   }, [id]);
+
+  useEffect(() => {
+    if (user?.role !== "student") return;
+    api("/enrollment/wishlist").then((list) => setWishlisted(list.some((w) => w.courseId === id))).catch(() => {});
+  }, [id, user]);
+
+  async function toggleWishlist() {
+    setWishlistBusy(true);
+    try {
+      if (wishlisted) {
+        await api(`/enrollment/wishlist/${id}`, { method: "DELETE" });
+        setWishlisted(false);
+      } else {
+        await api(`/enrollment/wishlist/${id}`, { method: "POST" });
+        setWishlisted(true);
+      }
+    } finally {
+      setWishlistBusy(false);
+    }
+  }
 
   useEffect(() => {
     if (user?.role !== "student") return;
@@ -173,7 +195,20 @@ export default function CourseDetail() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.15 }}
         >
-          <span className="price-big">${course.price}</span>
+          <div className="price-row">
+            <span className="price-big">${course.price}</span>
+            {(!user || user.role === "student") && !owned && (
+              <button
+                className="wishlist-btn"
+                onClick={() => (user ? toggleWishlist() : navigate("/login"))}
+                disabled={wishlistBusy}
+                aria-label={wishlisted ? "Remove from wishlist" : "Save for later"}
+                title={wishlisted ? "Saved — click to remove" : "Save for later"}
+              >
+                {wishlisted ? "♥" : "♡"}
+              </button>
+            )}
+          </div>
 
           <div className="breakdown">
             <div><span>Teacher price</span><span>${b.basePrice}</span></div>
