@@ -13,6 +13,7 @@ export default function Catalog() {
   const [sort, setSort] = useState("popular");
   const [limit, setLimit] = useState(PAGE);
   const [loading, setLoading] = useState(true);
+  const [q, setQ] = useState("");
 
   useEffect(() => {
     api("/courses").then(setCourses).catch(() => setCourses([])).finally(() => setLoading(false));
@@ -21,11 +22,20 @@ export default function Catalog() {
   const list = useMemo(() => {
     let l = courses.map((c) => ({ ...c, cat: categoryForIndustry(c.industry) }));
     if (active !== "all") l = l.filter((c) => c.cat?.slug === active);
+    if (q.trim()) {
+      const s = q.trim().toLowerCase();
+      l = l.filter((c) =>
+        c.title.toLowerCase().includes(s) ||
+        c.description?.toLowerCase().includes(s) ||
+        c.teacher?.name?.toLowerCase().includes(s) ||
+        c.topics?.some((t) => t.toLowerCase().includes(s))
+      );
+    }
     if (sort === "price") l = [...l].sort((a, b) => a.price - b.price);
     else if (sort === "new") l = [...l].sort((a, b) => (a.createdAt < b.createdAt ? 1 : -1));
     else l = [...l].sort((a, b) => b.students - a.students);
     return l;
-  }, [courses, active, sort]);
+  }, [courses, active, sort, q]);
 
   const shown = list.slice(0, limit);
 
@@ -39,6 +49,14 @@ export default function Catalog() {
             <span className="line outline">COURSES</span>
           </h1>
           <p className="cat-sub">Real courses from real teachers · {courses.length} available now, growing weekly</p>
+
+          <input
+            className="cat-search"
+            type="search"
+            placeholder="Search courses, topics, teachers…"
+            value={q}
+            onChange={(e) => { setQ(e.target.value); setLimit(PAGE); }}
+          />
 
           <div className="cat-bar">
             <div className="cat-filters">
@@ -61,7 +79,9 @@ export default function Catalog() {
           ) : shown.length === 0 ? (
             <div className="cat-empty">
               <p className="bs-h2 light">NOTHING YET</p>
-              <p className="mono" style={{ opacity: 0.6 }}>No courses in this category yet.</p>
+              <p className="mono" style={{ opacity: 0.6 }}>
+                {q.trim() ? `No courses match "${q}".` : "No courses in this category yet."}
+              </p>
             </div>
           ) : (
             <motion.div layout className="cat-grid">

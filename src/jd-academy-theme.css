@@ -351,3 +351,20 @@ html, body, #root, main, .container {
 .notif-item p { margin: 0 0 4px; font-size: 12px; opacity: 0.7; line-height: 1.4; }
 .notif-time { font-family: var(--font-mono, monospace); font-size: 10px; opacity: 0.4; }
 
+.cat-search {
+  display: block;
+  width: 100%;
+  max-width: 480px;
+  box-sizing: border-box;
+  margin: 22px 0 10px;
+  padding: 14px 22px;
+  border: 1.5px solid rgba(247, 244, 238, 0.35);
+  border-radius: var(--radius-pill, 150px);
+  background: rgba(247, 244, 238, 0.06);
+  color: var(--paper, #f7f4ee);
+  font-family: var(--font-body, sans-serif);
+  font-size: 15px;
+}
+.cat-search::placeholder { color: rgba(247, 244, 238, 0.5); }
+.cat-search:focus { outline: none; border-color: var(--coral, #f73b20); background: rgba(247, 244, 238, 0.1); }
+
