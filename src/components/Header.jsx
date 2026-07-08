@@ -23,12 +23,13 @@ export default function Header() {
 
   return (
     <>
-      <motion.nav
-        className="ef-nav"
-        initial={{ opacity: 0, y: 24 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.5, duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-      >
+      <div className="ef-nav-dock">
+        <motion.nav
+          className="ef-nav"
+          initial={{ opacity: 0, y: 24 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.5, duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+        >
         <LanguageSwitcher />
         <span className="ef-nav-sep" />
         <Link to="/" className="jd-logo" onClick={close}><span className="jd">JD</span><span className="learn">ACADEMY</span></Link>
@@ -40,8 +41,10 @@ export default function Header() {
             </NavLink>
           ))}
         </div>
-        <a href={SOCIAL.channel} target="_blank" rel="noreferrer" className="ef-nav-tg" title="Our channel"><TelegramIcon size={18} /></a>
-        <span className="ef-nav-sep" />
+        <span className="ef-nav-tg-wrap">
+          <a href={SOCIAL.channel} target="_blank" rel="noreferrer" className="ef-nav-tg" title="Our channel"><TelegramIcon size={18} /></a>
+          <span className="ef-nav-sep" />
+        </span>
         {user ? (
           <>
             <Link to="/dashboard" className="ef-nav-link">{t("nav.dashboard")}</Link>
@@ -53,7 +56,8 @@ export default function Header() {
             <Link to="/register" className="ef-pill-out">{t("nav.getStarted")}</Link>
           </>
         )}
-      </motion.nav>
+        </motion.nav>
+      </div>
 
       <button className="ef-burger" onClick={() => setOpen(true)} aria-label="Menu">☰</button>
 

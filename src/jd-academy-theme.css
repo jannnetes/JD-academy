@@ -187,13 +187,27 @@ html, body, #root, main, .container {
 /* "GET STARTED →" / "SIGN OUT →" wrapped onto 2 lines inside the pill,
    which read as clipped text — keep it on one line and don't let the
    flex nav squeeze it smaller than its content. */
-.ef-pill-out {
+.ef-pill-out, .ef-nav-link {
   white-space: nowrap;
   flex-shrink: 0;
 }
 
+/* Between the burger breakpoint (920px) and full width (~1550px) the pill's
+   content is wider than the available space, which used to force nav links
+   to wrap onto 2 lines and push "GET STARTED" past the viewport edge. Claw
+   back space by shrinking type/gaps first, then dropping the decorative
+   Telegram icon, before anything is allowed to wrap or clip again. */
+@media (max-width: 1500px) {
+  .ef-nav { gap: 10px; padding: 8px 10px 8px 18px; }
+  .ef-nav-links { gap: 12px; }
+  .ef-nav-link { font-size: 12.5px; }
+  .ef-nav-tg-wrap { display: none; }
+}
+
 @media (max-width: 1100px) {
   .ef-pill-out { font-size: 11px !important; padding: 8px 14px !important; }
+  .ef-nav-link { font-size: 11px; }
+  .ef-nav-links { gap: 9px; }
 }
 
 /* ---------- cookie consent banner ---------- */

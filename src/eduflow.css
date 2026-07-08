@@ -9,12 +9,27 @@
 }
 .ef-mono { font-family: "Space Mono", monospace; font-size: 13px; }
 
-/* ---------- BOTTOM FLOATING PILL NAV ---------- */
+/* ---------- BOTTOM FLOATING PILL NAV ----------
+   The dock is the fixed, full-width layer that centers the pill with
+   flexbox. Centering used to live on .ef-nav itself via left:50% +
+   transform:translateX(-50%), but .ef-nav is a framer-motion element —
+   once its enter animation settles, framer-motion writes its own
+   inline `transform` (even "none" for y:0), which silently wins over
+   the CSS transform and broke centering (the pill rendered flush to
+   the horizontal middle instead of centered, overflowing off-screen
+   on the right on anything narrower than ~1550px). Keeping the
+   transform-based centering on this separate, non-animated wrapper
+   avoids the conflict entirely. */
+.ef-nav-dock {
+  position: fixed; bottom: 28px; left: 0; right: 0; z-index: 300;
+  display: flex; justify-content: center; pointer-events: none;
+}
+.ef-nav-dock .ef-nav { pointer-events: auto; }
 .ef-nav {
-  position: fixed; bottom: 28px; left: 50%; transform: translateX(-50%); z-index: 300;
   display: flex; align-items: center; gap: 16px; padding: 9px 14px 9px 22px;
   background: rgba(247, 244, 238, 0.92); backdrop-filter: blur(20px);
   border: 1.5px solid #f73b20; border-radius: 150px; box-shadow: rgba(247, 59, 32, 0.16) 0 10px 36px;
+  max-width: calc(100vw - 24px);
 }
 .ef-logo { font-family: "Bebas Neue", sans-serif; font-size: 28px; color: #f73b20; line-height: 1; }
 .jd-logo { font-family: "Bebas Neue", sans-serif; font-size: 28px; line-height: 1; letter-spacing: 0.02em; display: inline-flex; }
@@ -23,6 +38,7 @@
 .ef-nav-sep { width: 1px; height: 22px; background: rgba(13, 13, 13, 0.16); }
 .ef-nav-links { display: flex; gap: 18px; }
 .ef-nav-tg { display: grid; place-items: center; color: #0d0d0d; opacity: 0.75; transition: 0.2s; }
+.ef-nav-tg-wrap { display: contents; }
 .ef-nav-tg:hover { color: #f73b20; opacity: 1; }
 
 /* ---------- LANGUAGE SWITCHER ---------- */
@@ -83,7 +99,7 @@
 .ef-overlay-close { position: absolute; top: 26px; right: 26px; background: none; border: none; color: #fff; font-size: 28px; cursor: pointer; }
 .ef-over-link { font-family: "Bebas Neue", sans-serif; font-size: clamp(48px, 12vw, 100px); color: #f7f4ee; background: none; border: none; }
 .ef-over-link.acid { color: #c8ff00; }
-@media (max-width: 920px) { .ef-nav { display: none; } .ef-burger { display: block; } }
+@media (max-width: 920px) { .ef-nav-dock { display: none; } .ef-burger { display: block; } }
 
 /* in-flow pages clear the floating nav */
 .site { padding-top: 48px; padding-bottom: 140px; }
