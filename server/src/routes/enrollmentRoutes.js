@@ -181,6 +181,47 @@ router.get("/lessons/:lessonId/video-token", requireAuth, async (req, res) => {
   res.json({ url: `${process.env.API_URL || ""}/api/stream/lesson/${lesson.id}?token=${token}` });
 });
 
+// Student's own private notes for a lesson.
+async function assertEnrolledInLesson(req, res) {
+  const lesson = await prisma.lesson.findUnique({
+    where: { id: req.params.lessonId },
+    include: { module: true },
+  });
+  if (!lesson) {
+    res.status(404).json({ error: "Урок не знайдено" });
+    return null;
+  }
+  const enrollment = await prisma.enrollment.findUnique({
+    where: { studentId_courseId: { studentId: req.user.id, courseId: lesson.module.courseId } },
+  });
+  if (!enrollment) {
+    res.status(403).json({ error: "Курс не придбано" });
+    return null;
+  }
+  return lesson;
+}
+
+router.get("/lessons/:lessonId/note", requireAuth, async (req, res) => {
+  const lesson = await assertEnrolledInLesson(req, res);
+  if (!lesson) return;
+  const note = await prisma.lessonNote.findUnique({
+    where: { studentId_lessonId: { studentId: req.user.id, lessonId: lesson.id } },
+  });
+  res.json({ content: note?.content || "" });
+});
+
+router.put("/lessons/:lessonId/note", requireAuth, async (req, res) => {
+  const lesson = await assertEnrolledInLesson(req, res);
+  if (!lesson) return;
+  const content = String(req.body?.content ?? "").slice(0, 20000);
+  const note = await prisma.lessonNote.upsert({
+    where: { studentId_lessonId: { studentId: req.user.id, lessonId: lesson.id } },
+    create: { studentId: req.user.id, lessonId: lesson.id, content },
+    update: { content },
+  });
+  res.json({ content: note.content });
+});
+
 // Student: complete a lesson -> XP + streak + badges (+ certificate at 100%)
 router.post("/lessons/:lessonId/complete", requireAuth, async (req, res) => {
   const lesson = await prisma.lesson.findUnique({

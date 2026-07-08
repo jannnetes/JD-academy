@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import Header from "../components/Header.jsx";
@@ -14,6 +14,9 @@ export default function Learn() {
   const [toast, setToast] = useState(null);
   const [hwContent, setHwContent] = useState("");
   const [submittedHw, setSubmittedHw] = useState(new Set());
+  const [note, setNote] = useState("");
+  const [noteSave, setNoteSave] = useState(""); // "", "saving", "saved"
+  const skipNoteSave = useRef(true);
 
   async function load() {
     const d = await api(`/enrollment/learn/${courseId}`);
@@ -38,6 +41,34 @@ export default function Learn() {
       .catch(() => { if (!cancelled) setVideoUrl(null); });
     return () => { cancelled = true; };
   }, [activeLesson?.id]);
+
+  // Personal notes — fetch fresh per lesson, then debounce-save on edits.
+  useEffect(() => {
+    if (!activeLesson) return;
+    skipNoteSave.current = true;
+    setNote("");
+    api(`/enrollment/lessons/${activeLesson.id}/note`)
+      .then((res) => { setNote(res.content || ""); })
+      .catch(() => {})
+      .finally(() => { setTimeout(() => { skipNoteSave.current = false; }, 50); });
+  }, [activeLesson?.id]);
+
+  const saveNote = useCallback(async (lessonId, content) => {
+    setNoteSave("saving");
+    try {
+      await api(`/enrollment/lessons/${lessonId}/note`, { method: "PUT", body: { content } });
+      setNoteSave("saved");
+      setTimeout(() => setNoteSave(""), 1500);
+    } catch {
+      setNoteSave("");
+    }
+  }, []);
+
+  useEffect(() => {
+    if (skipNoteSave.current || !activeLesson) return;
+    const id = setTimeout(() => saveNote(activeLesson.id, note), 900);
+    return () => clearTimeout(id);
+  }, [note, activeLesson, saveNote]);
 
   function showToast(payload) {
     setToast(payload);
@@ -145,6 +176,21 @@ export default function Learn() {
               ) : (
                 <p className="muted">{activeLesson.content}</p>
               )}
+
+              <div className="notes-panel glass">
+                <div className="notes-head">
+                  <span className="eyebrow">📝 My notes</span>
+                  <span className={`bld-save ${noteSave}`}>
+                    {noteSave === "saving" ? "SAVING…" : noteSave === "saved" ? "SAVED ✓" : ""}
+                  </span>
+                </div>
+                <textarea
+                  className="notes-input"
+                  placeholder="Write your own notes for this lesson — only you can see this…"
+                  value={note}
+                  onChange={(e) => setNote(e.target.value)}
+                />
+              </div>
 
               <button
                 className="primary-btn"

@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState, useCallback } from "react";
 import { useParams, Link } from "react-router-dom";
-import { api } from "../api";
+import { api, uploadFile } from "../api";
 
 const BLOCK_TYPES = [
   { type: "text", icon: "📝", label: "Text" },
@@ -205,16 +205,31 @@ function BlockEditor({ block, onChange }) {
     case "image":
       return (
         <div>
-          <input className="bld-input" placeholder="Image URL…" value={c.url} onChange={(e) => onChange({ ...c, url: e.target.value })} />
+          <div className="bld-upload-row">
+            <input className="bld-input" placeholder="Image URL…" value={c.url} onChange={(e) => onChange({ ...c, url: e.target.value })} />
+            <UploadButton accept="image/png,image/jpeg,image/gif,image/webp" onUploaded={(f) => onChange({ ...c, url: f.url })} />
+          </div>
           <input className="bld-input" placeholder="Alt text" value={c.alt} onChange={(e) => onChange({ ...c, alt: e.target.value })} />
         </div>
       );
     case "video":
-      return <input className="bld-input" placeholder="Video URL (mp4 / YouTube)…" value={c.url} onChange={(e) => onChange({ url: e.target.value })} />;
+      return (
+        <div>
+          <input className="bld-input" placeholder="Video URL (mp4 / YouTube)…" value={c.url} onChange={(e) => onChange({ url: e.target.value })} />
+          <p className="bld-hint">
+            💡 Upload your video to YouTube as <strong>Unlisted</strong> (Studio → Visibility → Unlisted),
+            then paste that video's link here. Direct video file uploads aren't supported yet — video
+            hosting is expensive to run ourselves, YouTube hosts it for free.
+          </p>
+        </div>
+      );
     case "file":
       return (
         <div>
-          <input className="bld-input" placeholder="File URL…" value={c.url} onChange={(e) => onChange({ ...c, url: e.target.value })} />
+          <div className="bld-upload-row">
+            <input className="bld-input" placeholder="File URL…" value={c.url} onChange={(e) => onChange({ ...c, url: e.target.value })} />
+            <UploadButton accept="application/pdf" onUploaded={(f) => onChange({ ...c, url: f.url, name: c.name || f.name })} />
+          </div>
           <input className="bld-input" placeholder="File name" value={c.name} onChange={(e) => onChange({ ...c, name: e.target.value })} />
         </div>
       );
@@ -223,4 +238,33 @@ function BlockEditor({ block, onChange }) {
     default:
       return null;
   }
+}
+
+function UploadButton({ accept, onUploaded }) {
+  const [state, setState] = useState(""); // "", "uploading", "error"
+  const inputRef = useRef(null);
+
+  async function handleFile(e) {
+    const file = e.target.files?.[0];
+    e.target.value = "";
+    if (!file) return;
+    setState("uploading");
+    try {
+      const res = await uploadFile(file);
+      onUploaded(res);
+      setState("");
+    } catch (err) {
+      setState("error");
+      alert(err.message);
+    }
+  }
+
+  return (
+    <>
+      <input ref={inputRef} type="file" accept={accept} hidden onChange={handleFile} />
+      <button type="button" className="bld-upload-btn" onClick={() => inputRef.current?.click()} disabled={state === "uploading"}>
+        {state === "uploading" ? "Uploading…" : "⬆ Upload"}
+      </button>
+    </>
+  );
 }

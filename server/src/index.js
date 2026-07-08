@@ -29,6 +29,7 @@ import adminRoutes from "./routes/adminRoutes.js";
 import reviewRoutes from "./routes/reviewRoutes.js";
 import meRoutes from "./routes/meRoutes.js";
 import streamRoutes from "./routes/streamRoutes.js";
+import uploadRoutes, { UPLOADS_DIR } from "./routes/uploadRoutes.js";
 
 const app = express();
 
@@ -56,6 +57,11 @@ app.use("/api/admin", adminRoutes);
 app.use("/api/reviews", reviewRoutes);
 app.use("/api/me", meRoutes);
 app.use("/api/stream", streamRoutes);
+app.use("/api/upload", uploadRoutes);
+
+// Teacher-uploaded PDFs/images — must be registered before the SPA
+// catch-all below so file requests aren't swallowed by index.html.
+app.use("/uploads", express.static(UPLOADS_DIR));
 
 // Production: serve the built frontend (dist) as static + SPA fallback
 const __dirname = path.dirname(fileURLToPath(import.meta.url));

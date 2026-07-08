@@ -44,3 +44,24 @@ export async function api(path, { method = "GET", body } = {}) {
   }
   return data;
 }
+
+// Separate from api() because file uploads need multipart/form-data —
+// the browser sets its own Content-Type boundary, so we must NOT set one.
+export async function uploadFile(file) {
+  const token = getToken();
+  const headers = {};
+  if (token) headers.Authorization = `Bearer ${token}`;
+
+  const form = new FormData();
+  form.append("file", file);
+
+  let res;
+  try {
+    res = await fetch(`${API_BASE}/api/upload`, { method: "POST", headers, body: form });
+  } catch {
+    throw new Error("Cannot reach the server. Check your connection.");
+  }
+  const data = await res.json().catch(() => null);
+  if (!res.ok) throw new Error(data?.error || "Upload failed");
+  return data;
+}
