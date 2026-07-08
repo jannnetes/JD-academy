@@ -97,6 +97,7 @@ export default function AdminDashboard() {
               <span className="muted small">{c.teacher.name} · {c.teacher.email}</span>
               <div style={{ display: "flex", gap: 10 }}>
                 <a href={`/course/${c.id}`} target="_blank" rel="noreferrer" className="secondary-btn">Preview</a>
+                <a href={`/learn/${c.id}`} target="_blank" rel="noreferrer" className="secondary-btn">View content</a>
                 <button className="primary-btn" onClick={() => approveCourse(c)}>Approve</button>
                 <button className="secondary-btn" onClick={() => rejectCourse(c)}>Reject</button>
               </div>

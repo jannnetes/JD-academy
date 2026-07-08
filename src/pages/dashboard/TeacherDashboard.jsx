@@ -1,7 +1,8 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import DashShell from "../../components/DashShell.jsx";
-import { api } from "../../api";
+import { api, uploadFile } from "../../api";
+import { coverStyle } from "../../coverStyle";
 
 const tabs = [
   { id: "overview", label: "Overview" },
@@ -21,9 +22,43 @@ export default function TeacherDashboard() {
   const [expanded, setExpanded] = useState(null);
 
   const [courseForm, setCourseForm] = useState({
-    title: "", description: "", industry: "Languages", topics: "", basePrice: 1500, level: "Beginner",
+    title: "", description: "", industry: "Languages", topics: "", basePrice: 1500, level: "Beginner", cover: "",
   });
   const [createMsg, setCreateMsg] = useState("");
+  const [coverUploading, setCoverUploading] = useState(false);
+  const [coverUploadingFor, setCoverUploadingFor] = useState(null);
+  const coverInputRef = useRef(null);
+
+  async function handleCoverUpload(e) {
+    const file = e.target.files?.[0];
+    e.target.value = "";
+    if (!file) return;
+    setCoverUploading(true);
+    try {
+      const res = await uploadFile(file);
+      setCourseForm((f) => ({ ...f, cover: res.url }));
+    } catch (err) {
+      alert(err.message);
+    } finally {
+      setCoverUploading(false);
+    }
+  }
+
+  async function handleExistingCoverUpload(courseId, e) {
+    const file = e.target.files?.[0];
+    e.target.value = "";
+    if (!file) return;
+    setCoverUploadingFor(courseId);
+    try {
+      const res = await uploadFile(file);
+      await api(`/courses/${courseId}`, { method: "PATCH", body: { cover: res.url } });
+      reload();
+    } catch (err) {
+      alert(err.message);
+    } finally {
+      setCoverUploadingFor(null);
+    }
+  }
   const [liveForm, setLiveForm] = useState({ title: "", startsAt: "", price: 0, capacity: 20 });
   const [hwTarget, setHwTarget] = useState(null);
   const [hwForm, setHwForm] = useState({ title: "", description: "" });
@@ -41,7 +76,7 @@ export default function TeacherDashboard() {
     try {
       await api("/courses", { method: "POST", body: courseForm });
       setCreateMsg("✓ Course created as a draft. Add modules and lessons in the Builder.");
-      setCourseForm({ title: "", description: "", industry: "Languages", topics: "", basePrice: 1500, level: "Beginner" });
+      setCourseForm({ title: "", description: "", industry: "Languages", topics: "", basePrice: 1500, level: "Beginner", cover: "" });
       reload();
       setActive("courses");
     } catch (err) {
@@ -115,7 +150,7 @@ export default function TeacherDashboard() {
           {courses.map((c) => (
             <article key={c.id} className="builder-card glass">
               <header className="builder-head">
-                <div className="builder-cover" style={{ background: c.cover }} />
+                <div className="builder-cover" style={coverStyle(c.cover)} />
                 <div className="builder-info">
                   <span className={c.status === "published" ? "badge ok" : "badge"}>{c.status}</span>
                   <h3>{c.title}</h3>
@@ -145,6 +180,19 @@ export default function TeacherDashboard() {
 
               {expanded === c.id && (
                 <div className="builder-body">
+                  <div className="cover-edit-row">
+                    <span className="muted small">Cover image</span>
+                    <input
+                      type="file"
+                      accept="image/png,image/jpeg,image/gif,image/webp"
+                      id={`cover-upload-${c.id}`}
+                      hidden
+                      onChange={(e) => handleExistingCoverUpload(c.id, e)}
+                    />
+                    <label htmlFor={`cover-upload-${c.id}`} className="secondary-btn small">
+                      {coverUploadingFor === c.id ? "Uploading…" : "Upload cover"}
+                    </label>
+                  </div>
                   {c.modules.map((m) => (
                     <div key={m.id} className="builder-module">
                       <p className="module-head"><span>📦 {m.title}</span></p>
@@ -193,6 +241,16 @@ export default function TeacherDashboard() {
             </label>
             <label>Topics (comma-separated)<input value={courseForm.topics} onChange={(e) => setCourseForm({ ...courseForm, topics: e.target.value })} placeholder="React, JavaScript" /></label>
             <label>Your price ($)<input type="number" value={courseForm.basePrice} onChange={(e) => setCourseForm({ ...courseForm, basePrice: e.target.value })} required /></label>
+            <label>
+              Cover image (optional)
+              <div className="cover-edit-row">
+                <input type="file" accept="image/png,image/jpeg,image/gif,image/webp" id="new-course-cover" hidden onChange={handleCoverUpload} />
+                <label htmlFor="new-course-cover" className="secondary-btn small">
+                  {coverUploading ? "Uploading…" : courseForm.cover ? "Change cover" : "Upload cover"}
+                </label>
+                {courseForm.cover && <div className="cover-thumb" style={coverStyle(courseForm.cover)} />}
+              </div>
+            </label>
             <div className="info-card subtle">
               <p className="small muted">Student pays ~<strong>${Math.round(courseForm.basePrice * 1.15)}</strong> (15% fee). You receive <strong>${courseForm.basePrice}</strong>.</p>
             </div>

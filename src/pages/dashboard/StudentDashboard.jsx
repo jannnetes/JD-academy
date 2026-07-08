@@ -4,6 +4,7 @@ import DashShell from "../../components/DashShell.jsx";
 import GamificationBar from "../../components/GamificationBar.jsx";
 import SupportPanel from "../../components/SupportPanel.jsx";
 import { api } from "../../api";
+import { coverStyle } from "../../coverStyle";
 
 const tabs = [
   { id: "courses", label: "My Learning" },
@@ -57,7 +58,7 @@ export default function StudentDashboard() {
           )}
           {enrollments.map((e) => (
             <article key={e.id} className="dash-card glass">
-              <div className="dash-card-cover" style={{ background: e.course.cover }} />
+              <div className="dash-card-cover" style={coverStyle(e.course.cover)} />
               <h3>{e.course.title}</h3>
               <p className="muted small">Teacher: {e.course.teacher.name}</p>
               <div className="progress-bar">
@@ -82,7 +83,7 @@ export default function StudentDashboard() {
           )}
           {wishlist.map((w) => (
             <article key={w.id} className="dash-card glass">
-              <div className="dash-card-cover" style={{ background: w.course.cover }} />
+              <div className="dash-card-cover" style={coverStyle(w.course.cover)} />
               <h3>{w.course.title}</h3>
               <p className="muted small">Teacher: {w.course.teacher.name} · {w.course.students} students</p>
               <Link to={`/course/${w.courseId}`} className="primary-btn full">View course</Link>

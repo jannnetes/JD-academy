@@ -80,7 +80,13 @@ export default function Learn() {
   );
 
   async function completeLesson(lesson) {
-    const res = await api(`/enrollment/lessons/${lesson.id}/complete`, { method: "POST" });
+    let res;
+    try {
+      res = await api(`/enrollment/lessons/${lesson.id}/complete`, { method: "POST" });
+    } catch (err) {
+      showToast({ xp: 0, line: err.message });
+      return;
+    }
     if (res.xpEarned > 0 || res.certificate) {
       showToast({
         xp: res.xpEarned,

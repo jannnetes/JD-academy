@@ -91,37 +91,49 @@ router.get("/my-courses", requireAuth, async (req, res) => {
   res.json(enrollments);
 });
 
-// One enrolled course (the learning player)
+const learnCourseInclude = {
+  teacher: { select: { name: true } },
+  modules: {
+    orderBy: { order: "asc" },
+    include: {
+      lessons: {
+        orderBy: { order: "asc" },
+        select: {
+          id: true, order: true, title: true, durationMin: true, xpReward: true, content: true,
+          homework: true, blocks: { orderBy: { order: "asc" } },
+        },
+      },
+    },
+  },
+};
+
+// One enrolled course (the learning player). The teacher who owns the
+// course (or an admin) can also open this without buying it themselves —
+// used for the "Preview (student view)" link in the Builder.
 router.get("/learn/:courseId", requireAuth, async (req, res) => {
   const enrollment = await prisma.enrollment.findUnique({
     where: { studentId_courseId: { studentId: req.user.id, courseId: req.params.courseId } },
-    include: {
-      course: {
-        include: {
-          teacher: { select: { name: true } },
-          modules: {
-            orderBy: { order: "asc" },
-            include: {
-              lessons: {
-                orderBy: { order: "asc" },
-                select: {
-                  id: true, order: true, title: true, durationMin: true, xpReward: true, content: true,
-                  homework: true, blocks: { orderBy: { order: "asc" } },
-                },
-              },
-            },
-          },
-        },
-      },
-      lessonProgress: true,
-    },
+    include: { course: { include: learnCourseInclude }, lessonProgress: true },
   });
-  if (!enrollment) return res.status(403).json({ error: "Курс не придбано" });
 
-  const certificate = await prisma.certificate.findUnique({
-    where: { userId_courseId: { userId: req.user.id, courseId: req.params.courseId } },
+  if (enrollment) {
+    const certificate = await prisma.certificate.findUnique({
+      where: { userId_courseId: { userId: req.user.id, courseId: req.params.courseId } },
+    });
+    return res.json({ ...enrollment, certificate });
+  }
+
+  const course = await prisma.course.findUnique({
+    where: { id: req.params.courseId },
+    include: learnCourseInclude,
   });
-  res.json({ ...enrollment, certificate });
+  if (!course) return res.status(404).json({ error: "Курс не знайдено" });
+
+  const isOwner = course.teacherId === req.user.id || req.user.role === "admin";
+  if (!isOwner) return res.status(403).json({ error: "Курс не придбано" });
+
+  // Read-only preview: no real enrollment, so no progress/certificate to track.
+  res.json({ id: null, courseId: course.id, progressPct: 0, completedAt: null, course, lessonProgress: [], certificate: null });
 });
 
 // Helper: recompute progress, award XP, issue certificate at 100%

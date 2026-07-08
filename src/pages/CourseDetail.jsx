@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import Header from "../components/Header.jsx";
 import { api } from "../api";
 import { useAuth } from "../auth/AuthContext.jsx";
+import { coverStyle } from "../coverStyle";
 
 export default function CourseDetail() {
   const { id } = useParams();
@@ -124,7 +125,7 @@ export default function CourseDetail() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
         >
-          <div className="detail-cover" style={{ background: course.cover || "var(--accent)" }}>
+          <div className="detail-cover" style={coverStyle(course.cover)}>
             <span className="course-industry">{course.industry}</span>
           </div>
           <span className="eyebrow">{course.industry}</span>
