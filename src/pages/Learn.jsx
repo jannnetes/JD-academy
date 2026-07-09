@@ -18,6 +18,8 @@ export default function Learn() {
   const [note, setNote] = useState("");
   const [noteSave, setNoteSave] = useState(""); // "", "saving", "saved"
   const skipNoteSave = useRef(true);
+  const [myReview, setMyReview] = useState(null); // null = not loaded yet, {} shape once loaded
+  const [reviewMsg, setReviewMsg] = useState("");
 
   async function load() {
     const d = await api(`/enrollment/learn/${courseId}`);
@@ -98,6 +100,28 @@ export default function Learn() {
       });
     }
     await load();
+  }
+
+  useEffect(() => {
+    if (!data?.certificate) return;
+    api(`/reviews/mine/${courseId}`)
+      .then((r) => setMyReview(r || { rating: 5, text: "" }))
+      .catch(() => setMyReview({ rating: 5, text: "" }));
+  }, [data?.certificate, courseId]);
+
+  async function submitReview(e) {
+    e.preventDefault();
+    setReviewMsg("");
+    try {
+      const res = await api(`/reviews/${courseId}`, {
+        method: "POST",
+        body: { rating: myReview.rating, text: myReview.text },
+      });
+      setMyReview(res);
+      setReviewMsg("✓ Thanks for the review!");
+    } catch (err) {
+      setReviewMsg(err.message);
+    }
   }
 
   async function submitHw(hw) {
@@ -241,6 +265,33 @@ export default function Learn() {
                     View & download certificate
                   </Link>
                 </div>
+              )}
+
+              {data.certificate && myReview && (
+                <form className="lesson-review-form glass" onSubmit={submitReview}>
+                  <h3>{myReview.id ? "Your review" : "Leave a review"}</h3>
+                  <div className="star-picker">
+                    {[1, 2, 3, 4, 5].map((n) => (
+                      <button
+                        type="button"
+                        key={n}
+                        className={`star-btn ${n <= myReview.rating ? "on" : ""}`}
+                        onClick={() => setMyReview({ ...myReview, rating: n })}
+                      >
+                        ★
+                      </button>
+                    ))}
+                  </div>
+                  <textarea
+                    placeholder="What did you think of this course?"
+                    value={myReview.text}
+                    onChange={(e) => setMyReview({ ...myReview, text: e.target.value })}
+                  />
+                  <button className="secondary-btn" type="submit">
+                    {myReview.id ? "Update review" : "Submit review"}
+                  </button>
+                  {reviewMsg && <p className="form-message">{reviewMsg}</p>}
+                </form>
               )}
             </motion.div>
           ) : (

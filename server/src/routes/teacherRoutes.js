@@ -47,18 +47,18 @@ router.get("/analytics", async (req, res) => {
     where: { courseId: { in: courseIds } },
   });
 
-  const reviews = await prisma.review.findMany({
-    where: { courseId: { in: courseIds }, status: "published" },
-    include: { course: { select: { title: true } }, student: { select: { name: true } } },
-    orderBy: { createdAt: "desc" },
-    take: 10,
-  });
+  const reviewWhere = { courseId: { in: courseIds }, status: "published" };
+  const [reviews, ratingAgg] = await Promise.all([
+    prisma.review.findMany({
+      where: reviewWhere,
+      include: { course: { select: { title: true } }, student: { select: { name: true } } },
+      orderBy: { createdAt: "desc" },
+      take: 10,
+    }),
+    prisma.review.aggregate({ where: reviewWhere, _avg: { rating: true } }),
+  ]);
 
-  const avgRating = reviews.length
-    ? Math.round(
-        (reviews.reduce((s, r) => s + r.rating, 0) / reviews.length) * 10
-      ) / 10
-    : 0;
+  const avgRating = ratingAgg._avg.rating ? Math.round(ratingAgg._avg.rating * 10) / 10 : 0;
 
   res.json({
     courseCount: courseIds.length,

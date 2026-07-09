@@ -95,6 +95,15 @@
 }
 .cert-seal { font-size: 56px; display: block; }
 
+.lesson-review-form { padding: 24px; margin-top: 24px; display: flex; flex-direction: column; gap: 12px; }
+.star-picker { display: flex; gap: 6px; }
+.star-btn { font-size: 28px; line-height: 1; background: none; border: none; cursor: pointer; color: var(--line); padding: 0; }
+.star-btn.on { color: #f5b400; }
+.lesson-review-form textarea {
+  padding: 14px 16px; border-radius: 16px; border: 1px solid var(--line);
+  min-height: 90px; background: var(--white); font-family: inherit; font-size: 14px; resize: vertical;
+}
+
 /* ---- XP toast ---- */
 .xp-toast {
   position: fixed; bottom: 28px; left: 50%; transform: translateX(-50%); z-index: 200;
