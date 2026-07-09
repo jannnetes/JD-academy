@@ -43,7 +43,14 @@ export default function Live() {
                   <div className="bs-card-top"><span className="bs-card-tag" style={{ color: "#FF3D2E" }}>🔴 LIVE</span><span className="mono">{s.booked} online</span></div>
                   <h3 className="bs-card-title">{s.title}</h3>
                   <div className="bs-card-meta"><span>{s.teacher?.name}</span></div>
-                  <div className="bs-card-foot"><span className="mono">{s.provider}</span><a href={s.roomUrl} target="_blank" rel="noreferrer" className="bs-card-buy">JOIN →</a></div>
+                  <div className="bs-card-foot">
+                    <span className="mono">{s.provider}</span>
+                    {s.roomUrl ? (
+                      <a href={s.roomUrl} target="_blank" rel="noreferrer" className="bs-card-buy">JOIN →</a>
+                    ) : (
+                      <Link to="/dashboard" className="bs-card-buy">BOOK →</Link>
+                    )}
+                  </div>
                 </div>
               ))}
             </div>

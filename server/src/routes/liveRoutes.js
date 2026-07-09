@@ -7,8 +7,11 @@ import { grantLiveBooking } from "../fulfillment.js";
 
 const router = Router();
 
-// Upcoming sessions (public-ish; auth optional)
-router.get("/", async (_req, res) => {
+// Upcoming sessions (public-ish; auth optional). roomUrl is stripped for
+// everyone except the session's own teacher/admin — join links are the
+// actual paywall for a paid session, and this listing is otherwise public.
+// A booked student's real join link comes from /live/my-bookings instead.
+router.get("/", async (req, res) => {
   const sessions = await prisma.liveSession.findMany({
     include: {
       teacher: { select: { name: true } },
@@ -18,10 +21,11 @@ router.get("/", async (_req, res) => {
     orderBy: { startsAt: "asc" },
   });
   res.json(
-    sessions.map((s) => ({
-      ...s,
-      booked: s._count.bookings,
-    }))
+    sessions.map((s) => {
+      const canSeeRoom = req.user && (req.user.id === s.teacherId || req.user.role === "admin");
+      const { roomUrl, ...rest } = s;
+      return { ...rest, ...(canSeeRoom && { roomUrl }), booked: s._count.bookings };
+    })
   );
 });
 
