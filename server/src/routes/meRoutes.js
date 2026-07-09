@@ -70,8 +70,8 @@ router.patch("/notifications/read-all", requireAuth, async (req, res) => {
   res.json({ ok: true });
 });
 
-// Public leaderboard (top by XP)
-router.get("/leaderboard", async (_req, res) => {
+// Leaderboard (top by XP) — only for logged-in students, not the open internet.
+router.get("/leaderboard", requireAuth, async (_req, res) => {
   const top = await prisma.user.findMany({
     where: { role: "student" },
     orderBy: { xp: "desc" },
