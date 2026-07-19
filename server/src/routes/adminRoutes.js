@@ -63,6 +63,24 @@ router.get("/stats", async (_req, res) => {
   });
 });
 
+// Permanently remove a course (seed/spam/test data) and everything that
+// references it. Module → Lesson → CourseBlock/Homework/LessonNote and
+// Wishlist cascade automatically in the schema; the rest doesn't, so it's
+// cleaned up explicitly here in FK-safe order before the course itself.
+router.delete("/courses/:id", async (req, res) => {
+  const course = await prisma.course.findUnique({ where: { id: req.params.id } });
+  if (!course) return res.status(404).json({ error: "Курс не знайдено" });
+
+  await prisma.certificate.deleteMany({ where: { courseId: course.id } });
+  await prisma.review.deleteMany({ where: { courseId: course.id } });
+  await prisma.order.deleteMany({ where: { courseId: course.id } });
+  await prisma.enrollment.deleteMany({ where: { courseId: course.id } });
+  await prisma.liveSession.deleteMany({ where: { courseId: course.id } });
+  await prisma.course.delete({ where: { id: course.id } });
+
+  res.json({ ok: true });
+});
+
 // Courses awaiting review (teacher clicked "Submit for review")
 router.get("/courses/pending", async (_req, res) => {
   const courses = await prisma.course.findMany({
